@@ -4,9 +4,16 @@
 
 Ce projet est un fork **inspiré du dépôt [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)** (scripts d’installation en trois étapes, Oh My Zsh, thème Agnoster dérivé, profil GNOME Terminal). La base conceptuelle et la structure reprennent cette approche ; les couleurs, le nom du thème, `dircolors`, la démo HTML et le script de désinstallation sont des **extensions et personnalisations** propres à ce dépôt **Mvnuel**.
 
-Configuration **Zsh + Oh My Zsh** pour Ubuntu / Linux (GNOME Terminal), avec une **palette personnalisée** (tons chauds, crème, accents verts / cyan) et un thème Agnoster dérivé. Sous macOS, vous pouvez vous inspirer des mêmes fichiers ; les commandes d’installation diffèrent souvent ([iTerm2](https://iterm2.com/), etc.).
+Configuration **Zsh + Oh My Zsh** pour **Ubuntu / Linux** (GNOME Terminal) ou **macOS** (script dédié + iTerm2), avec une **palette personnalisée** et un thème Agnoster dérivé.
 
 Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce dépôt a depuis été **enrichi** (palette Mvnuel, `dircolors`, démo web, script de désinstallation).
+
+### Quelle procédure suivre ?
+
+| Système | Où aller |
+|--------|----------|
+| **macOS** | **Uniquement le dossier [`macos/`](macos/README.md)** : `install.sh`, configs dans `macos/configs/`, couleurs iTerm2. **Ne pas** lancer les scripts `install_powerline.sh`, `install_terminal.sh` ni `install_profile.sh` à la racine (ils ciblent Ubuntu/`apt`/`dconf`). |
+| **Linux (Ubuntu, etc.)** | Scripts à la racine du dépôt (section **Installation (Linux / Ubuntu)** ci-dessous) et dossier `configs/`. |
 
 ## Contenu du dépôt (principaux fichiers)
 
@@ -19,8 +26,21 @@ Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce d
 | `configs/terminal_profile.dconf` | Couleurs + police du terminal GNOME |
 | `configs/mvnuel-agnoster.zsh-theme` | Prompt Powerline (couleurs hex) |
 | `configs/dircolors` | Couleurs de `ls` (GNU `dircolors`) |
+| **`macos/`** | **macOS** : `install.sh`, `uninstall.sh`, `Mvnuel.itermcolors`, configs dans **`macos/configs/`** — [README macOS](macos/README.md) |
 
-# Prérequis
+# macOS
+
+**Point d’entrée unique pour les utilisateurs macOS : le dossier [`macos/`](macos/README.md).**  
+Pas d’`apt` ni de `dconf` : installation via **Homebrew** et fichiers dans **`macos/configs/`**. Les couleurs de fenêtre : import **`Mvnuel.itermcolors`** dans **iTerm2**, ou réglage manuel dans **Terminal.app** (voir [macos/README.md](macos/README.md)).
+
+```bash
+chmod +x macos/install.sh
+./macos/install.sh
+```
+
+Détails, iTerm2 et désinstallation : **[macos/README.md](macos/README.md)**.
+
+# Prérequis (Linux / Ubuntu)
 
 ```bash
 # Mise à jour des paquets système
@@ -31,7 +51,7 @@ sudo apt-get upgrade
 sudo apt-get install -y git vim
 ```
 
-# Installation
+# Installation (Linux / Ubuntu)
 
 Exécuter **dans l’ordre**, depuis la racine du dépôt :
 
