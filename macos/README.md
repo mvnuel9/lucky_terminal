@@ -11,6 +11,7 @@ macos/
 ├── README.md                 # Ce fichier
 ├── install.sh
 ├── uninstall.sh
+├── purge_zsh.sh              # Nettoyage résiduel zsh / Oh My Zsh avant réinstall
 ├── Mvnuel.itermcolors        # Jeu de couleurs iTerm2
 └── configs/                  # Configurations dédiées macOS
     ├── README.md
@@ -78,6 +79,15 @@ Le **prompt Zsh** (thème Mvnuel) et **`ls`** (`dircolors`) fonctionnent **dès*
 chmod +x macos/uninstall.sh
 ./macos/uninstall.sh
 ```
+
+`uninstall.sh` ne supprime pas **Oh My Zsh**. Pour retirer `~/.oh-my-zsh`, `~/.zshrc`, caches, etc. :
+
+```bash
+chmod +x macos/purge_zsh.sh
+./macos/purge_zsh.sh
+```
+
+Options : `./macos/purge_zsh.sh --yes` (sans invite), `./macos/purge_zsh.sh --yes --with-history` (efface aussi `~/.zsh_history`). Équivalent Linux : `purge_zsh.sh` à la racine du dépôt.
 
 ## Limites
 

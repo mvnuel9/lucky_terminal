@@ -1,4 +1,4 @@
-# Lucky Terminal
+# Profil terminal Mvnuel
 
 ![terminal](./mvnuel_terminal.png)
 
@@ -12,7 +12,7 @@ Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce d
 
 | Système | Où aller |
 |--------|----------|
-| **macOS** | **Uniquement le dossier [`macos/`](macos/README.md)** : `install.sh`, configs dans `macos/configs/`, couleurs iTerm2. **Ne pas** lancer les scripts `install_powerline.sh`, `install_terminal.sh` ni `install_profile.sh` à la racine (ils ciblent Ubuntu/`apt`/`dconf`). |
+| **macOS** | **Uniquement le dossier [`macos/`](macos/README.md)** : **Ne pas** lancer les scripts à la racine (ils ciblent Ubuntu/`apt`/`dconf`). |
 | **Linux (Ubuntu, etc.)** | Scripts à la racine du dépôt (section **Installation (Linux / Ubuntu)** ci-dessous) et dossier `configs/`. |
 
 ## Contenu du dépôt (principaux fichiers)
@@ -28,19 +28,20 @@ Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce d
 | `configs/terminal_profile.dconf` | Couleurs + police du terminal GNOME |
 | `configs/mvnuel-agnoster.zsh-theme` | Prompt Powerline (couleurs hex) |
 | `configs/dircolors` | Couleurs de `ls` (GNU `dircolors`) |
-| **`macos/`** | **macOS** : `install.sh`, `uninstall.sh`, `Mvnuel.itermcolors`, configs dans **`macos/configs/`** — [README macOS](macos/README.md) |
+| **`macos/`** | **macOS** : `install.sh`, `uninstall.sh`, `purge_zsh.sh`, `Mvnuel.itermcolors`, configs dans **`macos/configs/`** — [README macOS](macos/README.md) |
 
 # macOS
 
 **Point d’entrée unique pour les utilisateurs macOS : le dossier [`macos/`](macos/README.md).**  
-Pas d’`apt` ni de `dconf` : installation via **Homebrew** et fichiers dans **`macos/configs/`**. Les couleurs de fenêtre : import **`Mvnuel.itermcolors`** dans **iTerm2**, ou réglage manuel dans **Terminal.app** (voir [macos/README.md](macos/README.md)).
+Pas d’`apt` ni de `dconf` : installation via **Homebrew** et fichiers dans **`macos/configs/`**. Les couleurs de fenêtre : import **`macos/Mvnuel.itermcolors`** dans **iTerm2**, ou réglage manuel dans **Terminal.app** (voir [macos/README.md](macos/README.md)).
 
 ```bash
 chmod +x macos/install.sh
 ./macos/install.sh
 ```
 
-Détails, iTerm2 et désinstallation : **[macos/README.md](macos/README.md)**.
+Désinstallation / nettoyage zsh côté macOS : **`./macos/uninstall.sh`** puis au besoin **`./macos/purge_zsh.sh`** (détails et options dans **[macos/README.md](macos/README.md)**).  
+La section **Désinstallation** ci-dessous décrit les scripts **`./uninstall.sh`** et **`./purge_zsh.sh`** à la racine (**Linux** uniquement).
 
 # Prérequis (Linux / Ubuntu)
 
@@ -49,7 +50,7 @@ Détails, iTerm2 et désinstallation : **[macos/README.md](macos/README.md)**.
 sudo apt-get update
 sudo apt-get upgrade
 
-# Instalation de Git et Vim
+# Installation de Git et Vim
 sudo apt-get install -y git vim
 ```
 
@@ -75,6 +76,8 @@ Après installation, **ouvrez un nouveau terminal** (ou reconnectez-vous) pour q
 
 # Désinstallation
 
+### Linux (Ubuntu + GNOME Terminal)
+
 Le script annule l’essentiel des trois étapes d’installation (profil GNOME Mvnuel, Powerline via pipx, polices RobotoMono sous `~/.fonts`, sauvegarde d’un `.vimrc` Powerline, bash par défaut, Oh My Zsh, etc.) :
 
 ```bash
@@ -84,7 +87,7 @@ chmod +x uninstall.sh
 
 Options : `./uninstall.sh --yes` (sans questions), `./uninstall.sh --yes --apt` (retire aussi le paquet `fonts-powerline`).
 
-**Résidus zsh** (dossier `~/.oh-my-zsh`, `~/.zshrc`, fichiers `.zcompdump*`, etc.) : si `uninstall.sh` n’a pas tout retiré (refus aux invites, désinstalleur Oh My Zsh incomplet), lance **`./purge_zsh.sh`** (liste ce qui sera effacé, puis demande confirmation ; `./purge_zsh.sh --yes` sans invite). Pour effacer aussi l’historique : `./purge_zsh.sh --yes --with-history`.  
+**Résidus zsh** (dossier `~/.oh-my-zsh`, `~/.zshrc`, fichiers `.zcompdump*`, etc.) : si `uninstall.sh` n’a pas tout retiré (refus aux invites, désinstalleur Oh My Zsh incomplet), lance **`./purge_zsh.sh`** sous Linux (liste ce qui sera effacé, puis demande confirmation ; `./purge_zsh.sh --yes` sans invite). Sous **macOS** : **`./macos/purge_zsh.sh`** (mêmes options `--yes` et `--with-history`). Pour effacer aussi l’historique : `./purge_zsh.sh --yes --with-history` (ou équivalent `macos/`).  
 `~/.dircolors` n’est pas supprimé par ces scripts ; supprime-le à la main si tu veux repartir sans couleurs `ls` personnalisées.
 
 Réinitialisation manuelle du terminal : [Ask Ubuntu — reset terminal](https://askubuntu.com/questions/14487/how-to-reset-the-terminal-properties-and-preferences)  
