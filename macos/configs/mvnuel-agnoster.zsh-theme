@@ -2,8 +2,8 @@
 #
 # Original agnoster's Theme - https://gist.github.com/3712874
 # Mvnuel : Agnoster + palette personnalisée (hex truecolor).
-# Fond segments : #251810 / #3a2a20 — aligné sur terminal_profile.dconf
-# macOS : copie sous macos/configs/ — éditer ici pour des réglages spécifiques Darwin.
+# Fond segments : #251810 / #3a2a20 — aligné sur Mvnuel.itermcolors / palette commune.
+# Copie alignée sur ../../configs/mvnuel-agnoster.zsh-theme (install : macos/install.sh).
 
 CURRENT_BG='NONE'
 
@@ -36,16 +36,13 @@ prompt_end() {
   CURRENT_BG=''
 }
 
-# user @ host : (palette Mvnuel)
+# Nom d’utilisateur uniquement (palette Mvnuel — root / user)
 prompt_context() {
   if [[ $UID -eq 0 ]]; then
-    prompt_segment "#251810" "#d44040" "%n"
+    prompt_segment "#3a2a20" "#d44040" "%n"
   else
-    prompt_segment "#251810" "#e0855a" "%n"
+    prompt_segment "#3a2a20" "#e0855a" "%n"
   fi
-  prompt_segment "#251810" "#c08040" "@"
-  prompt_segment "#251810" "#d4a060" "%m"
-  prompt_segment "#251810" "#888070" ":"
 }
 
 prompt_git() {
@@ -62,9 +59,9 @@ prompt_git() {
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
-      prompt_segment "#3a2a20" "#d44040"
+      prompt_segment "#d4a060" "#AA2727"
     else
-      prompt_segment "#3a2a20" "#e0a840"
+      prompt_segment "#d4a060" "#AA2727"
     fi
 
     if [[ -e "${repo_path}/BISECT_LOG" ]]; then
@@ -179,8 +176,9 @@ build_prompt() {
   RETVAL=$?
   prompt_head
   prompt_status
-  prompt_context
   prompt_virtualenv
+  prompt_context
+  # prompt_dir
   prompt_git
   prompt_bzr
   prompt_hg

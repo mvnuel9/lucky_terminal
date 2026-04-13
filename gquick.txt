@@ -1,0 +1,1 @@
+gquick "(ADD) install.sh linux version"

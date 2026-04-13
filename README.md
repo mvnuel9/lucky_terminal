@@ -1,4 +1,4 @@
-# Profil terminal Mvnuel
+# Lucky Terminal
 
 ![terminal](./mvnuel_terminal.png)
 
@@ -19,10 +19,12 @@ Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce d
 
 | Élément | Rôle |
 |--------|------|
+| `install.sh` | **Tout-en-un Linux** : enchaîne `install_powerline.sh` → `install_terminal.sh` → `install_profile.sh` |
 | `install_powerline.sh` | Polices Powerline, Vim, `pipx` + `powerline-status` |
 | `install_terminal.sh` | Zsh, Oh My Zsh |
 | `install_profile.sh` | Extensions Zsh, `~/.zshrc`, `~/.dircolors`, thème `mvnuel-agnoster`, profil GNOME Terminal, `chsh` → zsh |
 | `uninstall.sh` | Retour bash, retrait du profil Mvnuel, Oh My Zsh, Powerline (pipx), etc. |
+| `purge_zsh.sh` | **Nettoyage résiduel** : supprime `~/.oh-my-zsh`, `~/.zshrc`, caches zsh, etc. (après désinstall incomplète ou avant réinstall) |
 | `configs/terminal_profile.dconf` | Couleurs + police du terminal GNOME |
 | `configs/mvnuel-agnoster.zsh-theme` | Prompt Powerline (couleurs hex) |
 | `configs/dircolors` | Couleurs de `ls` (GNU `dircolors`) |
@@ -53,7 +55,14 @@ sudo apt-get install -y git vim
 
 # Installation (Linux / Ubuntu)
 
-Exécuter **dans l’ordre**, depuis la racine du dépôt :
+**Option rapide** — tout lancer d’un coup :
+
+```bash
+chmod +x install.sh
+./install.sh
+```
+
+**Ou** exécuter **dans l’ordre**, depuis la racine du dépôt :
 
 ```bash
 chmod +x install_powerline.sh install_terminal.sh install_profile.sh
@@ -74,6 +83,9 @@ chmod +x uninstall.sh
 ```
 
 Options : `./uninstall.sh --yes` (sans questions), `./uninstall.sh --yes --apt` (retire aussi le paquet `fonts-powerline`).
+
+**Résidus zsh** (dossier `~/.oh-my-zsh`, `~/.zshrc`, fichiers `.zcompdump*`, etc.) : si `uninstall.sh` n’a pas tout retiré (refus aux invites, désinstalleur Oh My Zsh incomplet), lance **`./purge_zsh.sh`** (liste ce qui sera effacé, puis demande confirmation ; `./purge_zsh.sh --yes` sans invite). Pour effacer aussi l’historique : `./purge_zsh.sh --yes --with-history`.  
+`~/.dircolors` n’est pas supprimé par ces scripts ; supprime-le à la main si tu veux repartir sans couleurs `ls` personnalisées.
 
 Réinitialisation manuelle du terminal : [Ask Ubuntu — reset terminal](https://askubuntu.com/questions/14487/how-to-reset-the-terminal-properties-and-preferences)  
 Retour bash / zsh : [Ask Ubuntu — remove zsh](https://askubuntu.com/questions/958120/remove-zsh-from-ubuntu-16-04)
