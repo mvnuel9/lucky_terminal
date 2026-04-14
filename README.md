@@ -1,4 +1,4 @@
-# Profil terminal Mvnuel
+# Lucky Terminal
 
 ![terminal](./mvnuel_terminal.png)
 
@@ -28,12 +28,12 @@ Les scripts d’origine (côté Pixegami) ont été testés sur Ubuntu 20 ; ce d
 | `configs/terminal_profile.dconf` | Couleurs + police du terminal GNOME |
 | `configs/mvnuel-agnoster.zsh-theme` | Prompt Powerline (couleurs hex) |
 | `configs/dircolors` | Couleurs de `ls` (GNU `dircolors`) |
-| **`macos/`** | **macOS** : `install.sh`, `uninstall.sh`, `purge_zsh.sh`, `Mvnuel.itermcolors`, configs dans **`macos/configs/`** — [README macOS](macos/README.md) |
+| **`macos/`** | **macOS** : `install.sh` (import auto du profil **`mvnuel.terminal`** dans Terminal.app), `uninstall.sh`, `purge_zsh.sh`, `Mvnuel.itermcolors` (iTerm2), configs **`macos/configs/`** — [README macOS](macos/README.md) |
 
 # macOS
 
 **Point d’entrée unique pour les utilisateurs macOS : le dossier [`macos/`](macos/README.md).**  
-Pas d’`apt` ni de `dconf` : installation via **Homebrew** et fichiers dans **`macos/configs/`**. Les couleurs de fenêtre : import **`macos/Mvnuel.itermcolors`** dans **iTerm2**, ou réglage manuel dans **Terminal.app** (voir [macos/README.md](macos/README.md)).
+Pas d’`apt` ni de `dconf` : installation via **Homebrew** et fichiers dans **`macos/configs/`**. **iTerm2** : import **`macos/Mvnuel.itermcolors`**. **Terminal.app** : **`install.sh`** enregistre **`macos/mvnuel.terminal`** comme profil par défaut (détails : [macos/README.md](macos/README.md)).
 
 ```bash
 chmod +x macos/install.sh
