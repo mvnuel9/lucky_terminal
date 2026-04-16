@@ -2,7 +2,8 @@
 #
 # Original agnoster's Theme - https://gist.github.com/3712874
 # Mvnuel : Agnoster + palette personnalisée (hex truecolor).
-# Fond segments : #251810 / #3a2a20 — aligné sur terminal_profile.dconf
+# Fond segments : #251810 / #3a2a20 — aligné sur Mvnuel.itermcolors / palette commune.
+# Copie alignée sur ../../configs/mvnuel-agnoster.zsh-theme (install : macos/install.sh).
 
 CURRENT_BG='NONE'
 

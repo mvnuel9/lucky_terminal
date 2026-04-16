@@ -1,0 +1,67 @@
+# macOS — palette Mvnuel (GNU dircolors). Copie dédiée : ajuster ici sans toucher configs/ (Linux).
+# eval "$(dircolors -b ~/.dircolors)" — coreutils : brew install coreutils
+COLORTERM ?*
+TERM Eterm
+TERM ansi
+TERM *color*
+TERM *direct*
+TERM con[0-9]*x[0-9]*
+TERM cons25
+TERM console
+TERM cygwin
+TERM dtterm
+TERM gnome
+TERM hurd
+TERM jfbterm
+TERM konsole
+TERM kterm
+TERM linux
+TERM linux-c
+TERM mlterm
+TERM putty
+TERM rxvt*
+TERM screen*
+TERM st
+TERM terminator
+TERM tmux*
+TERM vt100
+TERM xterm*
+
+RESET 38;2;240;223;192
+DIR 01;38;2;168;200;112
+LINK 01;38;2;96;200;208
+MULTIHARDLINK 38;2;232;213;188
+FIFO 38;2;212;160;96
+SOCK 38;2;212;160;96
+DOOR 38;2;212;160;96
+BLK 38;2;136;128;112
+CHR 38;2;136;128;112
+ORPHAN 38;2;212;64;64
+MISSING 01;38;2;212;64;64
+SETUID 38;2;224;133;90
+SETGID 38;2;224;133;90
+CAPABILITY 38;2;212;160;96
+STICKY 38;2;168;200;112
+STICKY_OTHER_WRITABLE 38;2;168;200;112
+OTHER_WRITABLE 38;2;168;200;112
+EXEC 01;38;2;224;133;90
+
+.tar 38;2;224;168;64
+.tgz 38;2;224;168;64
+.zip 38;2;224;168;64
+.gz 38;2;212;160;96
+.bz2 38;2;212;160;96
+.xz 38;2;212;160;96
+.deb 38;2;212;160;96
+.rpm 38;2;212;160;96
+
+*.c 38;2;240;223;192
+*.h 38;2;240;223;192
+*.cpp 38;2;240;223;192
+*.py 38;2;240;223;192
+*.rs 38;2;240;223;192
+*.js 38;2;240;223;192
+*.ts 38;2;240;223;192
+*.json 38;2;232;213;188
+*.md 38;2;232;213;188
+*.txt 38;2;232;213;188
