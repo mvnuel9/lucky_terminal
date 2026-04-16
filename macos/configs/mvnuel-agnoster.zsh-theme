@@ -185,4 +185,4 @@ build_prompt() {
   prompt_end
 }
 
-PROMPT='%{%f%b%k%}$(build_prompt)%{%F{#e8c090}%}%# '
+PROMPT='%{%f%b%k%}$(build_prompt) '
