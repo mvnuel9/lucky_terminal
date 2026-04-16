@@ -1,6 +1,6 @@
 # Lucky Terminal
 
-![terminal](./mvnuel_terminal.png)
+![terminal](./terminal.png)
 
 Ce projet est un fork **inspiré du dépôt [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)** (scripts d’installation en trois étapes, Oh My Zsh, thème Agnoster dérivé, profil GNOME Terminal). La base conceptuelle et la structure reprennent cette approche ; les couleurs, le nom du thème, `dircolors`, la démo HTML et le script de désinstallation sont des **extensions et personnalisations** propres à ce dépôt **Mvnuel**.
 
