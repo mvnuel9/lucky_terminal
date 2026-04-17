@@ -10,6 +10,11 @@
 #
 set -euo pipefail
 
+# Bash 3.2 (macOS) : pas de ${var,,} — utiliser tr pour rester compatible.
+_sh_tolower() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 MVNUEL_PROFILE_ID="fb358fc9-49ea-4252-ad34-1d25c649e633"
 
@@ -33,7 +38,8 @@ confirm() {
     return 0
   fi
   read -r -p "$msg [o/N] " reply
-  [[ "${reply,,}" == "o" || "${reply,,}" == "oui" || "$reply" == "y" || "$reply" == "Y" ]]
+  reply_lc="$(_sh_tolower "$reply")"
+  [[ "$reply_lc" == "o" || "$reply_lc" == "oui" || "$reply" == "y" || "$reply" == "Y" ]]
 }
 
 die() {

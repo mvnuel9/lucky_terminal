@@ -10,6 +10,11 @@
 #
 set -euo pipefail
 
+# Bash 3.2 (macOS) : pas de ${var,,} — utiliser tr pour rester compatible.
+_sh_tolower() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 AUTO_YES=0
 WITH_HISTORY=0
 for arg in "$@"; do
@@ -30,7 +35,8 @@ confirm() {
     return 0
   fi
   read -r -p "$msg [o/N] " reply
-  [[ "${reply,,}" == "o" || "${reply,,}" == "oui" || "$reply" == "y" || "$reply" == "Y" ]]
+  reply_lc="$(_sh_tolower "$reply")"
+  [[ "$reply_lc" == "o" || "$reply_lc" == "oui" || "$reply" == "y" || "$reply" == "Y" ]]
 }
 
 echo "=== Purge zsh / Oh My Zsh (résidus) ==="
