@@ -1,0 +1,49 @@
+{
+  "$schema": "https://aka.ms/terminal-profiles-schema",
+  "copyFormatting": "none",
+  "copyOnSelect": false,
+  "defaultProfile": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+  "profiles": {
+    "defaults": {
+      "font": {
+        "face": "RobotoMono Nerd Font",
+        "size": 12
+      },
+      "opacity": 94,
+      "useAcrylic": true
+    },
+    "list": [
+      {
+        "guid": "{574e775e-4f2a-5b96-ac1e-a2962a402336}",
+        "name": "PowerShell",
+        "colorScheme": "Mvnuel",
+        "cursorShape": "bar"
+      }
+    ]
+  },
+  "schemes": [
+    {
+      "name": "Mvnuel",
+      "foreground": "#F0DFC0",
+      "background": "#1A1210",
+      "cursorColor": "#E0A040",
+      "selectionBackground": "#5F5F5F",
+      "black": "#1A1210",
+      "red": "#D75F5F",
+      "green": "#87AF87",
+      "yellow": "#D7AF5F",
+      "blue": "#5F87AF",
+      "purple": "#875F87",
+      "cyan": "#5FAFAF",
+      "white": "#F0DFC0",
+      "brightBlack": "#5F5F5F",
+      "brightRed": "#FF875F",
+      "brightGreen": "#AFAF87",
+      "brightYellow": "#E0A040",
+      "brightBlue": "#87AFCF",
+      "brightPurple": "#AF87AF",
+      "brightCyan": "#87CFCF",
+      "brightWhite": "#FFF3E0"
+    }
+  ]
+}
