@@ -39,7 +39,7 @@ chmod +x macos/install.sh
 ./macos/install.sh
 ```
 
-Le script installe les dépendances Homebrew (**python**, **pipx**, **git**, **coreutils**), **powerline-status**, copie les polices, installe **Oh My Zsh** si besoin, clone les plugins, copie **`macos/configs/`** vers `~` et `~/.oh-my-zsh/themes/`, puis **importe le profil Terminal.app** depuis **`mvnuel.terminal`** dans `~/Library/Preferences/com.apple.Terminal.plist` et le définit comme **profil par défaut** et **au démarrage** (nécessite **python3**, fourni par Homebrew dans ce flux).
+Le script installe les dépendances Homebrew (**python**, **pipx**, **git**, **coreutils**), **powerline-status**, copie les polices, installe **Oh My Zsh** si besoin, clone les plugins, copie **`macos/configs/`** vers `~` et `~/.oh-my-zsh/themes/`, puis **importe le profil Terminal.app** depuis **`mvnuel.terminal`** dans `~/Library/Preferences/com.apple.Terminal.plist` et le définit comme **profil par défaut** et **au démarrage** (nécessite **python3**, fourni par Homebrew dans ce flux). Pendant cette étape, les couleurs Apple Terminal sont synchronisées avec **`Mvnuel.itermcolors`**.
 
 Ensuite : **nouveau terminal** ou `exec zsh`. **Fermez puis rouvrez Terminal.app** (ou ouvrez une nouvelle fenêtre) pour appliquer le profil graphique.
 
@@ -58,13 +58,15 @@ L’installation **shell** (`install.sh`) est la même que vous utilisiez **Term
 `Mvnuel.itermcolors` ne s’importe **pas** dans Terminal.app (réservé à iTerm2). À la place, **`./macos/install.sh`** enregistre automatiquement le fichier **`macos/mvnuel.terminal`** comme profil **Mvnuel** (couleurs ANSI, fond, texte, curseur, etc.) et le définit comme **défaut** et **profil au démarrage**, tant que **python3** est disponible (après `brew install python`, c’est le cas).
 
 1. Après installation : fermez **Terminal.app** puis rouvrez-le, ou **nouvelle fenêtre** (**⌘N**), pour charger le profil.
-2. **Police** : dans **Réglages → Profil Mvnuel → Texte**, choisissez **Roboto Mono for Powerline** (installée dans `~/Library/Fonts/`), taille **13–14**, si ce n’est pas déjà le cas dans l’export.
+2. **Police (important)** : dans **Réglages → Profil Mvnuel → Texte**, forcez **Roboto Mono for Powerline** (installée dans `~/Library/Fonts/`), taille **13–14**.
+3. Si vous voyez des barres/séparateurs Powerline anormaux : désactivez provisoirement **Texte en gras avec couleurs vives** dans le même écran, puis rouvrez une fenêtre Terminal.
+4. **Clavier AZERTY** : gardez **Option comme Meta** désactivé dans le profil, sinon `~` et plusieurs caractères Alt/AltGr peuvent devenir indisponibles.
 
 **Sans script** (import manuel) : double-clic sur **`mvnuel.terminal`** ou **Terminal → Réglages… → Profils → … → Importer…**, puis définissez **Mvnuel** comme profil par défaut.
 
 **Réglage manuel des couleurs** (si l’import automatique échoue : pas de `python3`, fichier manquant) : dupliquez un profil, renommez-le **Mvnuel**, puis par exemple **Fond** `#1a1210`, **Texte** `#f0dfc0`, **Curseur** `#e0a040`. Les **couleurs ANSI** peuvent s’aligner sur **`configs/terminal_profile.dconf`** (palette) ou sur **`Mvnuel.itermcolors`** (mêmes teintes, autre format).
 
-Le **prompt Zsh** (thème Mvnuel) et **`ls`** (`dircolors`) fonctionnent **dès** que `install.sh` a été exécuté ; le **cadre** du terminal (fond, texte, ANSI) suit le profil **Mvnuel** une fois Terminal.app rechargé.
+Le **prompt Zsh** (thème Mvnuel) et **`ls`** (`dircolors`) fonctionnent **dès** que `install.sh` a été exécuté ; le **cadre** du terminal (fond, texte, ANSI) suit le profil **Mvnuel** une fois Terminal.app rechargé. Si l’apparence diffère d’iTerm2, revérifiez d’abord la police du profil Terminal.app.
 
 **Limite** : Terminal.app gère parfois moins finement les couleurs ou les glyphes Powerline qu’iTerm2 ; si un séparateur du prompt semble coupé, vérifiez la police et la taille, ou testez iTerm2.
 

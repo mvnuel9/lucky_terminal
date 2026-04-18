@@ -2,6 +2,11 @@
 # Retire une partie des éléments installés par macos/install.sh (sans tout supprimer aveuglément).
 set -euo pipefail
 
+# Bash 3.2 (macOS) : pas de ${var,,} — utiliser tr pour rester compatible.
+_sh_tolower() {
+  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
+}
+
 if [[ "$(uname -s)" != "Darwin" ]]; then
   echo "Prévu pour macOS." >&2
   exit 1
@@ -15,7 +20,8 @@ fi
 echo "==> Polices RobotoMono dans ~/Library/Fonts ..."
 if [[ -d "${HOME}/Library/Fonts/RobotoMono" ]]; then
   read -r -p "Supprimer ~/Library/Fonts/RobotoMono ? [o/N] " a
-  if [[ "${a,,}" == "o" || "${a,,}" == "oui" ]]; then
+  a_lc="$(_sh_tolower "$a")"
+  if [[ "$a_lc" == "o" || "$a_lc" == "oui" ]]; then
     rm -rf "${HOME}/Library/Fonts/RobotoMono"
   fi
 fi
