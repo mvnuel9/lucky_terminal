@@ -12,9 +12,9 @@
           "type": "path",
           "style": "plain",
           "foreground": "#a8c870",
-          "template": " \uf07b {{ .Path }} ",
+          "template": " [{{ .Path }}] ",
           "properties": {
-            "style": "folder",
+            "style": "full",
             "max_width": 64,
             "folder_icon": "",
             "home_icon": "~"

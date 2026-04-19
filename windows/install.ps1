@@ -85,11 +85,75 @@ function Get-PSReadLineBestInstalledVersion {
     return $null
 }
 
+function Test-RobotoMonoNerdFontInstalled {
+    <#
+    .SYNOPSIS
+        Indique si une variante RobotoMono Nerd Font est deja enregistree (registre + fichiers .ttf/.otf).
+    #>
+    $faceNeedles = @('RobotoMono', 'Nerd')
+    $fontRegPaths = @(
+        'HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts',
+        'HKLM:\Software\Microsoft\Windows NT\CurrentVersion\Fonts'
+    )
+    foreach ($regPath in $fontRegPaths) {
+        if (-not (Test-Path -LiteralPath $regPath)) {
+            continue
+        }
+        try {
+            $props = Get-ItemProperty -LiteralPath $regPath -ErrorAction Stop
+        } catch {
+            continue
+        }
+        foreach ($p in $props.PSObject.Properties) {
+            $name = $p.Name
+            if ($name -match '^(PS)') {
+                continue
+            }
+            $ok = $true
+            foreach ($needle in $faceNeedles) {
+                if ($name -notlike "*$needle*") {
+                    $ok = $false
+                    break
+                }
+            }
+            if ($ok) {
+                return $true
+            }
+        }
+    }
+
+    $fontDirs = @(
+        (Join-Path -Path $env:LOCALAPPDATA -ChildPath 'Microsoft\Windows\Fonts'),
+        (Join-Path -Path $env:Windir -ChildPath 'Fonts')
+    )
+    foreach ($dir in $fontDirs) {
+        if (-not (Test-Path -LiteralPath $dir)) {
+            continue
+        }
+        $hit = Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue |
+            Where-Object {
+                $_.Extension -match '^\.(ttf|otf)$' -and
+                    $_.Name -match '(?i)RobotoMono' -and $_.Name -match '(?i)Nerd'
+            } |
+            Select-Object -First 1
+        if ($hit) {
+            return $true
+        }
+    }
+
+    return $false
+}
+
 function Install-UserFontsFromDirectory {
     param(
         [Parameter(Mandatory = $true)]
         [string]$Directory
     )
+
+    if (Test-RobotoMonoNerdFontInstalled) {
+        Write-Host "    Police RobotoMono Nerd Font deja installee : aucun enregistrement depuis le dossier."
+        return
+    }
 
     if (-not (Test-Path -LiteralPath $Directory)) {
         Write-Warning "Dossier polices introuvable: $Directory"
@@ -190,8 +254,12 @@ if (-not (Test-Path -LiteralPath $profileSource)) {
 }
 
 if (-not [string]::IsNullOrWhiteSpace($NerdFontDirectory)) {
-    Write-Host "==> Enregistrement des polices utilisateur (depuis -NerdFontDirectory)..."
-    Install-UserFontsFromDirectory -Directory $NerdFontDirectory.Trim()
+    if (Test-RobotoMonoNerdFontInstalled) {
+        Write-Host "==> Police RobotoMono Nerd Font deja installee : -NerdFontDirectory ignore."
+    } else {
+        Write-Host "==> Enregistrement des polices utilisateur (depuis -NerdFontDirectory)..."
+        Install-UserFontsFromDirectory -Directory $NerdFontDirectory.Trim()
+    }
 }
 
 Write-Host "==> Oh My Posh (executable ; le module PowerShell est deprecie)..."

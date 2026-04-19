@@ -66,7 +66,7 @@ if (Test-Path -LiteralPath $themeTarget) {
     }
 }
 
-if (Confirm-Step -Message "Desinstaller les modules PowerShell (Terminal-Icons, z) et l'ancien module oh-my-posh s'il reste ?") {
+if (Confirm-Step -Message 'Desinstaller les modules PowerShell (Terminal-Icons, z) et l''ancien module oh-my-posh s''il reste ?') {
     $modules = @("oh-my-posh", "Terminal-Icons", "z")
     foreach ($moduleName in $modules) {
         if (Get-Module -ListAvailable -Name $moduleName) {
@@ -82,7 +82,7 @@ if (Confirm-Step -Message "Desinstaller le binaire Oh My Posh installe via winge
         & winget.exe uninstall JanDeDobbeleer.OhMyPosh --source winget --accept-source-agreements 2>$null
         Write-Host "    Desinstallation winget demandee (verifiez la sortie ci-dessus)."
     } else {
-        Write-Host "    winget introuvable — desinstallez Oh My Posh a la main si besoin."
+        Write-Host "    winget introuvable - desinstallez Oh My Posh a la main si besoin."
     }
 }
 
@@ -104,5 +104,5 @@ if (Confirm-Step -Message "Restaurer les settings Windows Terminal depuis un bac
 }
 
 Write-Host ""
-Write-Host "Desinstallation terminee."
-Write-Host "Si besoin d'un nettoyage plus profond, lance windows/purge_profile.ps1."
+Write-Host 'Desinstallation terminee.'
+Write-Host 'Si besoin d''un nettoyage plus profond, lance windows/purge_profile.ps1.'
