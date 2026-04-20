@@ -1,5 +1,7 @@
 # Lucky Terminal — Linux
 
+![Aperçu du terminal linux](./linux.png)
+
 Bienvenue dans le coin **Linux** du projet. Ici tout est pensé pour **Ubuntu** (et souvent les environnements **GNOME Terminal** / `dconf`) : Zsh, thème Automnale, couleurs pour `ls`, Vim avec Powerline si tu en as besoin, et polices **Roboto Mono for Powerline** pour que les séparateurs du prompt s’affichent correctement.
 
 ---
