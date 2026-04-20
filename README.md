@@ -83,3 +83,9 @@ Ne mélange pas les dossiers : les scripts **`linux/`** ne sont pas faits pour m
 ## 🔗 Ressources utiles
 
 [Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh) · [Powerline fonts](https://github.com/powerline/fonts) · [Nerd Fonts](https://www.nerdfonts.com/) · [Oh My Posh](https://ohmyposh.dev/) · Inspiration : [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)
+
+---
+
+## 📄 Licence
+
+Ce projet est distribué sous licence **[MIT](LICENSE)**. Les polices embarquées conservent leurs licences d'origine (Apache 2.0 pour Roboto Mono et sa variante Nerd Font — voir `*/fonts/RobotoMono/LICENSE.txt`).
