@@ -21,12 +21,17 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# ls : palette Mvnuel (~/.dircolors). GNU coreutils : brew install coreutils
-if [[ -f ~/.dircolors ]]; then
-  if [[ "$(uname -s)" == "Darwin" ]] && [[ -d "$(brew --prefix 2>/dev/null)/opt/coreutils" ]]; then
-    export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
-  fi
-  if command -v dircolors >/dev/null 2>&1; then
+# ls : palette Mvnuel. GNU coreutils : brew install coreutils
+# Terminal.app (macOS < Tahoe) ne gère pas le truecolor → on bascule sur
+# ~/.dircolors.terminal (xterm-256) pour éviter le surlignage vert sur les noms
+# de dossiers. iTerm2 / autres → ~/.dircolors (truecolor hex).
+if [[ "$(uname -s)" == "Darwin" ]] && [[ -d "$(brew --prefix 2>/dev/null)/opt/coreutils" ]]; then
+  export PATH="$(brew --prefix)/opt/coreutils/libexec/gnubin:$PATH"
+fi
+if command -v dircolors >/dev/null 2>&1; then
+  if [[ "$TERM_PROGRAM" == "Apple_Terminal" && "$COLORTERM" != (truecolor|24bit) && -f ~/.dircolors.terminal ]]; then
+    eval "$(dircolors -b ~/.dircolors.terminal)"
+  elif [[ -f ~/.dircolors ]]; then
     eval "$(dircolors -b ~/.dircolors)"
   fi
 fi

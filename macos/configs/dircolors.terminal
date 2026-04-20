@@ -1,0 +1,70 @@
+# macOS — palette Mvnuel (GNU dircolors) pour Terminal.app (xterm-256 colors).
+# Terminal.app ne supporte pas truecolor 24-bit (`38;2;R;G;B`) — d'où ce fichier
+# en indices xterm-256 (`38;5;N`), parfaitement supportés. Choisi automatiquement
+# par ~/.zshrc quand TERM_PROGRAM=Apple_Terminal.
+# eval "$(dircolors -b ~/.dircolors)" — coreutils : brew install coreutils
+COLORTERM ?*
+TERM Eterm
+TERM ansi
+TERM *color*
+TERM *direct*
+TERM con[0-9]*x[0-9]*
+TERM cons25
+TERM console
+TERM cygwin
+TERM dtterm
+TERM gnome
+TERM hurd
+TERM jfbterm
+TERM konsole
+TERM kterm
+TERM linux
+TERM linux-c
+TERM mlterm
+TERM putty
+TERM rxvt*
+TERM screen*
+TERM st
+TERM terminator
+TERM tmux*
+TERM vt100
+TERM xterm*
+
+RESET 38;5;230
+DIR 01;38;5;150
+LINK 01;38;5;116
+MULTIHARDLINK 38;5;223
+FIFO 38;5;180
+SOCK 38;5;180
+DOOR 38;5;180
+BLK 38;5;102
+CHR 38;5;102
+ORPHAN 38;5;167
+MISSING 01;38;5;167
+SETUID 38;5;173
+SETGID 38;5;173
+CAPABILITY 38;5;180
+STICKY 38;5;150
+STICKY_OTHER_WRITABLE 38;5;150
+OTHER_WRITABLE 38;5;150
+EXEC 01;38;5;173
+
+.tar 38;5;179
+.tgz 38;5;179
+.zip 38;5;179
+.gz 38;5;180
+.bz2 38;5;180
+.xz 38;5;180
+.deb 38;5;180
+.rpm 38;5;180
+
+*.c 38;5;230
+*.h 38;5;230
+*.cpp 38;5;230
+*.py 38;5;230
+*.rs 38;5;230
+*.js 38;5;230
+*.ts 38;5;230
+*.json 38;5;223
+*.md 38;5;223
+*.txt 38;5;223

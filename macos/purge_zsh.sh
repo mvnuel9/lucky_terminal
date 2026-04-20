@@ -101,4 +101,4 @@ done
 
 echo ""
 echo "Terminé. Tu peux relancer ./macos/install.sh (depuis la racine du dépôt) pour réinstaller le profil."
-echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors."
+echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors, ~/.dircolors.terminal."

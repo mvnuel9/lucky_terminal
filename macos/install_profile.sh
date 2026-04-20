@@ -41,6 +41,7 @@ clone_omz_plugin "https://github.com/zsh-users/zsh-autosuggestions.git"
 echo "==> Copie des configs macOS (macos/configs/ → ~ et ~/.oh-my-zsh/themes)..."
 cp "${CONFIGS}/.zshrc" "${HOME}/.zshrc"
 cp "${CONFIGS}/dircolors" "${HOME}/.dircolors"
+cp "${CONFIGS}/dircolors.terminal" "${HOME}/.dircolors.terminal"
 cp "${CONFIGS}/mvnuel-agnoster.zsh-theme" "${HOME}/.oh-my-zsh/themes/mvnuel-agnoster.zsh-theme"
 
 TERMINAL_APP_PROFILE="${SCRIPT_DIR}/mvnuel.terminal"
