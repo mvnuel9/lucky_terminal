@@ -10,16 +10,38 @@ Inspiré des approches du type [pixegami/terminal-profile](https://github.com/pi
 
 ---
 
+## 🖼️ Aperçu
+
+<table>
+  <tr>
+    <td align="center"><a href="linux/README.md"><img src="./linux/linux.png" alt="Linux (Ubuntu + GNOME Terminal)" width="100%" /></a><br/><sub><b>Linux</b> · Ubuntu + GNOME</sub></td>
+    <td align="center"><a href="macos/README.md"><img src="./macos/macos.png" alt="macOS (Terminal.app / iTerm2)" width="100%" /></a><br/><sub><b>macOS</b> · Terminal.app / iTerm2</sub></td>
+    <td align="center"><a href="windows/README.md"><img src="./windows/powershell.png" alt="Windows (PowerShell + Oh My Posh)" width="100%" /></a><br/><sub><b>Windows</b> · PowerShell + Oh My Posh</sub></td>
+  </tr>
+</table>
+
+---
+
 ## Arborescence (vue d’ensemble)
 ```
 lucky_terminal
-├── linux/          # Config Linux
-├── macos/          # Config MacOS
-├── windows/        # Config Windows
+├── linux/          # Config Linux (Ubuntu + GNOME)
+├── macos/          # Config macOS (Terminal.app / iTerm2)
+├── windows/        # Config Windows (PowerShell + Oh My Posh)
+├── header.svg      # Bannière du README
+├── tree.txt        # Arborescence détaillée
 └── README.md       # Documentation rapide
 ```
 
 Pour le **détail fichier par fichier** (polices, configs, etc.), ouvre [`tree.txt`](tree.txt).
+
+---
+
+## 📋 Prérequis
+
+- **Linux** : Ubuntu (ou dérivé Debian), `git`, `vim`, GNOME Terminal recommandé.
+- **macOS** : [Homebrew](https://brew.sh) installé, Terminal.app ou iTerm2.
+- **Windows** : PowerShell 5.1+ (ou 7+), connexion Internet (winget + modules).
 
 ---
 
@@ -32,10 +54,13 @@ Pour le **détail fichier par fichier** (polices, configs, etc.), ouvre [`tree.t
 | **Linux** | Tout installer | `chmod +x linux/install.sh && ./linux/install.sh` |
 | **Linux** | Désinstaller | `chmod +x linux/uninstall.sh && ./linux/uninstall.sh` |
 | **Linux** | Nettoyage poussé (zsh) | `chmod +x linux/purge_zsh.sh && ./linux/purge_zsh.sh` |
-| **macOS** | Installer | `chmod +x macos/install.sh && ./macos/install.sh` |
-| **macOS** | Désinstaller / purge | Voir [macos/README.md](macos/README.md) |
-| **Windows** | Installer | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1` |
+| **macOS** | Tout installer | `chmod +x macos/install.sh && ./macos/install.sh` |
+| **macOS** | Désinstaller | `chmod +x macos/uninstall.sh && ./macos/uninstall.sh` |
+| **macOS** | Nettoyage poussé (zsh) | `chmod +x macos/purge_zsh.sh && ./macos/purge_zsh.sh` |
+| **Windows** | Tout installer | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1` |
 | **Windows** | Sans questions | `… -File .\windows\install.ps1 -Yes` |
+| **Windows** | Désinstaller | `… -File .\windows\uninstall.ps1` |
+| **Windows** | Purge résiduelle | `… -File .\windows\purge_profile.ps1` |
 | **Windows** | Dossier polices externe | `… -File .\windows\install.ps1 -Yes -NerdFontDirectory "<chemin>"` |
 | **Windows** | Forcer MAJ PSReadLine | `… -File .\windows\install.ps1 -Yes -ForcePSReadLineUpdate` |
 
@@ -57,4 +82,4 @@ Ne mélange pas les dossiers : les scripts **`linux/`** ne sont pas faits pour m
 
 ## 🔗 Ressources utiles
 
-[Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh) · [Powerline fonts](https://github.com/powerline/fonts) · [Oh My Posh](https://ohmyposh.dev/) · Inspiration : [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)
+[Oh My Zsh](https://github.com/ohmyzsh/ohmyzsh) · [Powerline fonts](https://github.com/powerline/fonts) · [Nerd Fonts](https://www.nerdfonts.com/) · [Oh My Posh](https://ohmyposh.dev/) · Inspiration : [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)
