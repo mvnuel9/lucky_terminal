@@ -1,8 +1,6 @@
 # Lucky Terminal
 
-<p align="center">
-    <img src="./header.svg" alt="Lucky Terminal — thème Automnale multi-plateforme" width="100%" />
-</p>
+
 
 **Lucky Terminal**, c’est une **boîte à outils** pour que ton terminal ressemble au thème **Automnale** : couleurs harmonisées (ambiance terreuse, chaleureuse voire un peu vintage), invite de commande lisible (style Agnoster), même logique sur **Linux**, **macOS** et **Windows**. L’idée : cloner le dépôt, lancer **un** script selon ton OS, et retrouver un environnement cohérent sans y passer la journée.
 
@@ -12,17 +10,16 @@ Inspiré des approches du type [pixegami/terminal-profile](https://github.com/pi
 
 ## 🖼️ Aperçu
 
-<table>
-  <tr>
-    <td align="center"><a href="linux/README.md"><img src="./linux/linux.png" alt="Linux (Ubuntu + GNOME Terminal)" width="100%" /></a><br/><sub><b>Linux</b> · Ubuntu + GNOME</sub></td>
-    <td align="center"><a href="macos/README.md"><img src="./macos/macos.png" alt="macOS (Terminal.app / iTerm2)" width="100%" /></a><br/><sub><b>macOS</b> · Terminal.app / iTerm2</sub></td>
-    <td align="center"><a href="windows/README.md"><img src="./windows/powershell.png" alt="Windows (PowerShell + Oh My Posh)" width="100%" /></a><br/><sub><b>Windows</b> · PowerShell + Oh My Posh</sub></td>
-  </tr>
-</table>
+
+|                            |                                   |                                       |
+| -------------------------- | --------------------------------- | ------------------------------------- |
+| **Linux** · Ubuntu + GNOME | **macOS** · Terminal.app / iTerm2 | **Windows** · PowerShell + Oh My Posh |
+
 
 ---
 
 ## Arborescence (vue d’ensemble)
+
 ```
 lucky_terminal
 ├── linux/          # Config Linux (Ubuntu + GNOME)
@@ -33,7 +30,7 @@ lucky_terminal
 └── README.md       # Documentation rapide
 ```
 
-Pour le **détail fichier par fichier** (polices, configs, etc.), ouvre [`tree.txt`](tree.txt).
+Pour le **détail fichier par fichier** (polices, configs, etc.), ouvre `[tree.txt](tree.txt)`.
 
 ---
 
@@ -49,34 +46,38 @@ Pour le **détail fichier par fichier** (polices, configs, etc.), ouvre [`tree.t
 
 À lancer **depuis la racine** du dépôt cloné (`lucky_terminal/`).
 
-| Plateforme | Action | Commande |
-|------------|--------|----------|
-| **Linux** | Tout installer | `chmod +x linux/install.sh && ./linux/install.sh` |
-| **Linux** | Désinstaller | `chmod +x linux/uninstall.sh && ./linux/uninstall.sh` |
-| **Linux** | Nettoyage poussé (zsh) | `chmod +x linux/purge_zsh.sh && ./linux/purge_zsh.sh` |
-| **macOS** | Tout installer | `chmod +x macos/install.sh && ./macos/install.sh` |
-| **macOS** | Désinstaller | `chmod +x macos/uninstall.sh && ./macos/uninstall.sh` |
-| **macOS** | Nettoyage poussé (zsh) | `chmod +x macos/purge_zsh.sh && ./macos/purge_zsh.sh` |
-| **Windows** | Tout installer | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1` |
-| **Windows** | Sans questions | `… -File .\windows\install.ps1 -Yes` |
-| **Windows** | Désinstaller | `… -File .\windows\uninstall.ps1` |
-| **Windows** | Purge résiduelle | `… -File .\windows\purge_profile.ps1` |
-| **Windows** | Dossier polices externe | `… -File .\windows\install.ps1 -Yes -NerdFontDirectory "<chemin>"` |
-| **Windows** | Forcer MAJ PSReadLine | `… -File .\windows\install.ps1 -Yes -ForcePSReadLineUpdate` |
 
-Chaque plateforme propose aussi un **mode étape par étape** (`install_powerline`, `install_terminal`, `install_profile` pour Linux/macOS, et `install_fonts`, `install_terminal`, `install_profile` pour Windows) — utile pour debugger ou n'installer qu'une partie. Voir le README dédié.
+| Plateforme  | Action                  | Commande                                                                    |
+| ----------- | ----------------------- | --------------------------------------------------------------------------- |
+| **Linux**   | Tout installer          | `chmod +x linux/install.sh && ./linux/install.sh`                           |
+| **Linux**   | Désinstaller            | `chmod +x linux/uninstall.sh && ./linux/uninstall.sh`                       |
+| **Linux**   | Nettoyage poussé (zsh)  | `chmod +x linux/purge_zsh.sh && ./linux/purge_zsh.sh`                       |
+| **macOS**   | Tout installer          | `chmod +x macos/install.sh && ./macos/install.sh`                           |
+| **macOS**   | Désinstaller            | `chmod +x macos/uninstall.sh && ./macos/uninstall.sh`                       |
+| **macOS**   | Nettoyage poussé (zsh)  | `chmod +x macos/purge_zsh.sh && ./macos/purge_zsh.sh`                       |
+| **Windows** | Tout installer          | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1` |
+| **Windows** | Sans questions          | `… -File .\windows\install.ps1 -Yes`                                        |
+| **Windows** | Désinstaller            | `… -File .\windows\uninstall.ps1`                                           |
+| **Windows** | Purge résiduelle        | `… -File .\windows\purge_profile.ps1`                                       |
+| **Windows** | Dossier polices externe | `… -File .\windows\install.ps1 -Yes -NerdFontDirectory "<chemin>"`          |
+| **Windows** | Forcer MAJ PSReadLine   | `… -File .\windows\install.ps1 -Yes -ForcePSReadLineUpdate`                 |
 
-Ne mélange pas les dossiers : les scripts **`linux/`** ne sont pas faits pour macOS, etc.
+
+Chaque plateforme propose aussi un **mode étape par étape** (`install_powerline`, `install_terminal`, `install_profile` pour Linux/macOS, et `install_fonts`, `install_terminal`, `install_profile` pour Windows) utile pour debugger ou n'installer qu'une partie. Voir le README dédié.
+
+Ne mélange pas les dossiers : les scripts `**linux/`** ne sont pas faits pour macOS, etc.
 
 ---
 
 ## 📚 Pour aller plus loin
 
-| Système | Doc dédiée |
-|---------|------------|
-| Linux | [linux/README.md](linux/README.md) |
-| macOS | [macos/README.md](macos/README.md) |
+
+| Système | Doc dédiée                             |
+| ------- | -------------------------------------- |
+| Linux   | [linux/README.md](linux/README.md)     |
+| macOS   | [macos/README.md](macos/README.md)     |
 | Windows | [windows/README.md](windows/README.md) |
+
 
 ---
 
