@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 #
 # Désinstalle ce qui a été mis en place par, dans l'ordre :
-#   install_powerline.sh → install_terminal.sh → install_profile.sh
+#   linux/install_powerline.sh → linux/install_terminal.sh → linux/install_profile.sh
 #
-# Usage :
-#   ./uninstall.sh              # demande confirmation avant actions sensibles
-#   ./uninstall.sh --yes        # sans invite (adapté aux scripts)
-#   ./uninstall.sh --yes --apt  # désinstalle aussi fonts-powerline (apt)
+# Usage (depuis la racine du dépôt) :
+#   ./linux/uninstall.sh              # demande confirmation avant actions sensibles
+#   ./linux/uninstall.sh --yes        # sans invite (adapté aux scripts)
+#   ./linux/uninstall.sh --yes --apt  # désinstalle aussi fonts-powerline (apt)
 #
 set -euo pipefail
 
@@ -69,7 +69,7 @@ else
   echo "[2/6] Pas de ~/.vimrc — rien à retirer."
 fi
 
-# --- 3) Polices copiées depuis fonts/ vers ~/.fonts/ ---
+# --- 3) Polices copiées depuis linux/fonts/ vers ~/.fonts/ ---
 if [[ -d "$HOME/.fonts/RobotoMono" ]]; then
   echo "[3/6] Suppression de ~/.fonts/RobotoMono (Roboto Mono for Powerline)..."
   rm -rf "$HOME/.fonts/RobotoMono"
