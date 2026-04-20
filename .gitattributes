@@ -1,0 +1,50 @@
+# Normalisation des fins de ligne pour un dépôt multi-OS.
+# Force la détection automatique des fichiers texte vs binaires par défaut.
+* text=auto eol=lf
+
+# Scripts Unix : toujours LF (sinon ils cassent sur Linux/macOS).
+*.sh       text eol=lf
+*.bash     text eol=lf
+*.zsh      text eol=lf
+*.zsh-theme text eol=lf
+
+# Scripts PowerShell / Windows : CRLF (conventionnel sous Windows).
+*.ps1      text eol=crlf
+*.psm1     text eol=crlf
+*.psd1     text eol=crlf
+*.cmd      text eol=crlf
+*.bat      text eol=crlf
+
+# Configs diverses.
+*.md       text eol=lf
+*.json     text eol=lf
+*.yml      text eol=lf
+*.yaml     text eol=lf
+*.xml      text eol=lf
+*.conf     text eol=lf
+*.dconf    text eol=lf
+.vimrc     text eol=lf
+.zshrc     text eol=lf
+dircolors  text eol=lf
+
+# Binaires (pas de conversion, pas de diff texte).
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
+*.svg      text eol=lf
+*.ttf      binary
+*.otf      binary
+*.woff     binary
+*.woff2    binary
+*.pcf.gz   binary
+*.zip      binary
+*.tar.gz   binary
+*.itermcolors binary
+*.terminal text eol=lf
+
+# Cacher les fichiers binaires dans les diffs GitHub.
+*.ttf      -diff
+*.otf      -diff
+*.png      -diff
