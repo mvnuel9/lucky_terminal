@@ -1,4 +1,6 @@
-
+<p align="center">
+    <img src="./header.svg" alt="Lucky Terminal — thème Automnale multi-plateforme" width="100%" />
+</p>
 
 ---
 
