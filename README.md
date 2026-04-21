@@ -1,8 +1,8 @@
-<p align="center">
-    <img src="./header.svg" alt="Lucky Terminal — thème Automnale multi-plateforme" width="100%" />
-</p>
+
 
 ---
+
+# Description
 
 **Lucky Terminal**, c’est une **boîte à outils** pour que ton terminal ressemble au thème **Automnale** : couleurs harmonisées (ambiance terreuse, chaleureuse voire un peu vintage), invite de commande lisible (style Agnoster), même logique sur **Linux**, **macOS** et **Windows**. L’idée : cloner le dépôt, lancer **un** script selon ton OS, et retrouver un environnement cohérent sans y passer la journée.
 
@@ -13,9 +13,9 @@ Inspiré des approches du type [pixegami/terminal-profile](https://github.com/pi
 ## 🖼️ Aperçu
 
 
-| **Linux** · Ubuntu + GNOME       | **macOS** · Terminal.app / iTerm2 | **Windows** · PowerShell + Oh My Posh |
-| -------------------------------- | --------------------------------- | ------------------------------------- |
-| ![Linux](linux/linux.png)        | ![macOS](macos/macos.png)         | ![Windows](windows/powershell.png)    |
+| **Linux** · Ubuntu + GNOME | **macOS** · Terminal.app / iTerm2 | **Windows** · PowerShell + Oh My Posh |
+| -------------------------- | --------------------------------- | ------------------------------------- |
+| Linux                      | macOS                             | Windows                               |
 
 
 ---
@@ -91,4 +91,4 @@ Ne mélange pas les dossiers : les scripts `**linux/`** ne sont pas faits pour m
 
 ## 📄 Licence
 
-Ce projet est distribué sous licence **[MIT](LICENSE)**. Les polices embarquées conservent leurs licences d'origine (Apache 2.0 pour Roboto Mono et sa variante Nerd Font — voir `*/fonts/RobotoMono/LICENSE.txt`).
+Ce projet est distribué sous licence **[MIT](LICENSE)**. Les polices embarquées conservent leurs licences d'origine.
