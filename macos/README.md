@@ -1,98 +1,116 @@
 # Lucky Terminal — macOS
 
-**Vous êtes sur macOS ?** C’est le **seul** dossier d’installation à utiliser (`install.sh`, `macos/configs/`). Les scripts `install_powerline.sh` / `install_terminal.sh` / `install_profile.sh` à la racine du dépôt sont réservés à **Linux (Ubuntu + GNOME Terminal)**.
+![Aperçu du terminal](../macos.png)
 
-Ce dossier est **autonome** : les configurations shell/Vim/thème pour macOS vivent dans **`macos/configs/`**, séparées du dossier **`configs/`** (Linux / Ubuntu + GNOME Terminal).
+Tu es sur **Mac** ? Tu es au bon endroit : ce dossier contient **tout** ce qu’il faut pour appliquer le thème customisé (invite Zsh, couleurs, `ls` agréable). Les scripts sous `linux/` sont pour Linux uniquement ici on utilise `macos/install.sh` et les fichiers de `macos/configs/`.
 
-## Arborescence
+---
+
+## 🗂️ Arborescence du dossier
 
 ```
 macos/
-├── README.md                 # Documentation
-├── install.sh                # Installation du thème
-├── uninstall.sh              # Script de désintallation du thème
-├── purge_zsh.sh              # Nettoyage résiduel zsh / Oh My Zsh avant réinstall
-├── Mvnuel.itermcolors        # Jeu de couleurs iTerm2
-├── mvnuel.terminal           # Profil Terminal.app (import auto par install.sh)
-└── configs/                  # Configurations dédiées macOS
-    ├── README.md
-    ├── .vimrc
-    ├── .zshrc
-    ├── dircolors
-    └── mvnuel-agnoster.zsh-theme
+├── configs/
+│   ├── README.md
+│   ├── .vimrc
+│   ├── .zshrc
+│   ├── dircolors
+│   └── mvnuel-agnoster.zsh-theme
+├── fonts/
+│   ├── RobotoMono/         # Polices Powerline (TTF)
+│   └── install.sh
+├── install.sh              # Enchaîne les trois étapes
+├── install_powerline.sh    # Homebrew deps + pipx + polices + .vimrc
+├── install_terminal.sh     # Oh My Zsh + fichiers aliases/functions
+├── install_profile.sh      # Plug-ins Zsh, thème Mvnuel, profil Terminal.app
+├── Mvnuel.itermcolors      # Jeu de couleurs pour iTerm2
+├── mvnuel.terminal         # Profil pour Terminal.app
+├── purge_zsh.sh
+├── uninstall.sh
+└── README.md
 ```
 
-Les **polices** restent à la racine du dépôt (`fonts/`) : `install.sh` les copie vers `~/Library/Fonts/`.
+---
 
-## Prérequis
+## 💡 Ce que font les fichiers
 
-- **macOS** récent
-- [Homebrew](https://brew.sh/) (`brew`)
-- Accès Internet (curl, git, clones Oh My Zsh)
+### Mode one-click (installation en un clic)
+- **`install.sh`** : le **parcours tout-en-un** — enchaîne les trois étapes ci-dessous, idéal pour « tout d'un coup ».
 
-## Installation rapide
+### Mode étapes (pour debugger / installer à la carte)
+- **`install_powerline.sh`** : prépare l'environnement (**Homebrew**, `pipx`, `powerline-status`), copie le `.vimrc` et installe les polices `Roboto Mono for Powerline` dans `~/Library/Fonts`.
+- **`install_terminal.sh`** : installe ou conserve **Oh My Zsh**, crée les fichiers `~/.aliases` et `~/.functions`.
+- **`install_profile.sh`** : clone les plug-ins Zsh (syntax highlighting, autosuggestions), copie les configs (`.zshrc`, `dircolors`, thème Mvnuel) et importe le profil **Terminal.app** via `mvnuel.terminal`.
 
-Depuis la **racine du dépôt** :
+### Assets
+- **`Mvnuel.itermcolors`** : préréglage de couleurs pour **iTerm2**.
+- **`mvnuel.terminal`** : profil « tout prêt » pour **Terminal.app** — importé automatiquement par `install_profile.sh` si `python3` est disponible.
+
+### Désinstallation
+- **`uninstall.sh`** : enlève une partie de ce qui a été posé par le projet (sans tout casser sur ta machine).
+- **`purge_zsh.sh`** : nettoyage plus profond si tu veux repartir de zéro côté zsh / Oh My Zsh (avec options pour limiter les questions ou effacer aussi l'historique si tu le souhaites).
+
+---
+
+## ⌨️ Commandes
+
+**Installation one-click** (depuis la racine du dépôt) :
 
 ```bash
 chmod +x macos/install.sh
 ./macos/install.sh
 ```
 
-Le script installe les dépendances Homebrew (**python**, **pipx**, **git**, **coreutils**), **powerline-status**, copie les polices, installe **Oh My Zsh** si besoin, clone les plugins, copie **`macos/configs/`** vers `~` et `~/.oh-my-zsh/themes/`, puis **importe le profil Terminal.app** depuis **`mvnuel.terminal`** dans `~/Library/Preferences/com.apple.Terminal.plist` et le définit comme **profil par défaut** et **au démarrage** (nécessite **python3**, fourni par Homebrew dans ce flux). Pendant cette étape, les couleurs Apple Terminal sont synchronisées avec **`Mvnuel.itermcolors`**.
+**Installation étape par étape** (même ordre que le script maître) :
 
-Ensuite : **nouveau terminal** ou `exec zsh`. **Fermez puis rouvrez Terminal.app** (ou ouvrez une nouvelle fenêtre) pour appliquer le profil graphique.
+```bash
+chmod +x macos/install_powerline.sh macos/install_terminal.sh macos/install_profile.sh
+./macos/install_powerline.sh
+./macos/install_terminal.sh
+./macos/install_profile.sh
+```
 
-## Couleurs du terminal
+Ensuite, ouvre un **nouveau terminal** ou lance `exec zsh` pour profiter du shell. Si le profil graphique ne suit pas tout de suite, ferme et rouvre **Terminal** (ou une nouvelle fenêtre).
 
-L’installation **shell** (`install.sh`) est la même que vous utilisiez **Terminal.app** (intégré à macOS) ou **iTerm2**. Seule la **mise en couleur de la fenêtre** change.
-
-### Avec iTerm2 (import rapide)
-
-1. **iTerm2 → Settings → Profiles → Colors → Color Presets… → Import…**
-2. Fichier **`macos/Mvnuel.itermcolors`**, puis choisir le préréglage **Mvnuel**.
-3. **Text** : police **Roboto Mono for Powerline**, taille **13–14**.
-
-### Avec Terminal.app uniquement (sans iTerm2)
-
-`Mvnuel.itermcolors` ne s’importe **pas** dans Terminal.app (réservé à iTerm2). À la place, **`./macos/install.sh`** enregistre automatiquement le fichier **`macos/mvnuel.terminal`** comme profil **Mvnuel** (couleurs ANSI, fond, texte, curseur, etc.) et le définit comme **défaut** et **profil au démarrage**, tant que **python3** est disponible (après `brew install python`, c’est le cas).
-
-1. Après installation : fermez **Terminal.app** puis rouvrez-le, ou **nouvelle fenêtre** (**⌘N**), pour charger le profil.
-2. **Police (important)** : dans **Réglages → Profil Mvnuel → Texte**, forcez **Roboto Mono for Powerline** (installée dans `~/Library/Fonts/`), taille **13–14**.
-3. Si vous voyez des barres/séparateurs Powerline anormaux : désactivez provisoirement **Texte en gras avec couleurs vives** dans le même écran, puis rouvrez une fenêtre Terminal.
-4. **Clavier AZERTY** : gardez **Option comme Meta** désactivé dans le profil, sinon `~` et plusieurs caractères Alt/AltGr peuvent devenir indisponibles.
-
-**Sans script** (import manuel) : double-clic sur **`mvnuel.terminal`** ou **Terminal → Réglages… → Profils → … → Importer…**, puis définissez **Mvnuel** comme profil par défaut.
-
-**Réglage manuel des couleurs** (si l’import automatique échoue : pas de `python3`, fichier manquant) : dupliquez un profil, renommez-le **Mvnuel**, puis par exemple **Fond** `#1a1210`, **Texte** `#f0dfc0`, **Curseur** `#e0a040`. Les **couleurs ANSI** peuvent s’aligner sur **`configs/terminal_profile.dconf`** (palette) ou sur **`Mvnuel.itermcolors`** (mêmes teintes, autre format).
-
-Le **prompt Zsh** (thème Mvnuel) et **`ls`** (`dircolors`) fonctionnent **dès** que `install.sh` a été exécuté ; le **cadre** du terminal (fond, texte, ANSI) suit le profil **Mvnuel** une fois Terminal.app rechargé. Si l’apparence diffère d’iTerm2, revérifiez d’abord la police du profil Terminal.app.
-
-**Limite** : Terminal.app gère parfois moins finement les couleurs ou les glyphes Powerline qu’iTerm2 ; si un séparateur du prompt semble coupé, vérifiez la police et la taille, ou testez iTerm2.
-
-## `ls` et `dircolors`
-
-`macos/configs/.zshrc` ajoute le **GNU coreutils** au `PATH` (`brew --prefix/opt/coreutils/...`) avant `dircolors`. `brew install coreutils` est exécuté par `install.sh`.
-
-## Désinstallation partielle
+**Désinstallation (partielle)** :
 
 ```bash
 chmod +x macos/uninstall.sh
 ./macos/uninstall.sh
 ```
 
-`uninstall.sh` ne supprime pas **Oh My Zsh**. Pour retirer `~/.oh-my-zsh`, `~/.zshrc`, caches, etc. :
+**Purge zsh** (résidus, réinstallation propre) :
 
 ```bash
 chmod +x macos/purge_zsh.sh
 ./macos/purge_zsh.sh
+
+#Sans invite : 
+./macos/purge_zsh.sh --yes
 ```
 
-Options : `./macos/purge_zsh.sh --yes` (sans invite), `./macos/purge_zsh.sh --yes --with-history` (efface aussi `~/.zsh_history`). Équivalent Linux : `purge_zsh.sh` à la racine du dépôt.
+Tu peux aussi regarder les options du script (par ex. historique) avec `--help` si le script le propose.
 
-## Limites
+---
 
-- Pas d’équivalent **`dconf`** : pas de profil GNOME. **iTerm2** : import `Mvnuel.itermcolors`. **Terminal.app** : profil **`mvnuel.terminal`** importé par **`install.sh`** (ou à la main), pas besoin de tout saisir sauf en secours.
-- Les scripts **`install_*.sh`** à la racine du dépôt ciblent **Ubuntu** ; sous macOS, utilisez **`macos/install.sh`** uniquement.
+## 🎨 Terminal.app ou iTerm2 ?
 
-**Amont / inspiration :** [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)
+- Le **prompt** et le shell suivent surtout  **`install.sh`** et ton **`.zshrc`**. 
+- Pour la **fenêtre** (fond, couleurs ANSI) : **Terminal.app** utilise le profil **`mvnuel.terminal`** ; **iTerm2** profite de **`Mvnuel.itermcolors`** importé dans les réglages du profil.
+
+Si un caractère du prompt semble « coupé », vérifie la **police** et la **taille** (Roboto Mono for Powerline), ou teste iTerm2 qui gère parfois mieux certains glyphes.
+
+### 👌Recommandation
+Télécharger et installer [iTerm2](https://iterm2.com/downloads/stable/iTerm2-3_6_9.zip) Pour une meilleure expérience et appréciation du terminal customisé
+
+---
+
+## 🌍 Ailleurs dans le dépôt
+
+- **Linux** : `[linux/](../linux/)`
+- **Windows** : `[windows/](../windows/)`
+- **Vue d’ensemble** : [README à la racine](../README.md)
+
+Inspiration amont : [pixegami/terminal-profile](https://github.com/pixegami/terminal-profile)
+
+Bon terminal ! 🍀

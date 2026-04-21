@@ -3,6 +3,8 @@
 # Stop le script immédiatement en cas d'erreur
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 echo "Installation de Powerline pour Vim..."
 
 # Installer les dépendances système
@@ -25,7 +27,7 @@ pipx install powerline-status
 echo "Configuration de Vim..."
 
 # Copier le fichier .vimrc
-cp configs/.vimrc ~/.vimrc
+cp "${SCRIPT_DIR}/configs/.vimrc" ~/.vimrc
 
 # Installer les polices personnalisées (optionnel)
 echo "Installation des polices..."
@@ -34,7 +36,7 @@ echo "Installation des polices..."
 mkdir -p ~/.fonts
 
 # Copier les polices
-cp -a fonts/. ~/.fonts/
+cp -a "${SCRIPT_DIR}/fonts/." ~/.fonts/
 
 # Mettre à jour le cache des polices
 fc-cache -fv ~/.fonts/

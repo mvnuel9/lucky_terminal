@@ -1,4 +1,4 @@
-# macOS — palette Mvnuel (GNU dircolors). Copie dédiée : ajuster ici sans toucher configs/ (Linux).
+# macOS — palette Mvnuel (GNU dircolors). Copie dédiée : ajuster ici sans toucher linux/configs/ (Linux).
 # eval "$(dircolors -b ~/.dircolors)" — coreutils : brew install coreutils
 COLORTERM ?*
 TERM Eterm

@@ -3,7 +3,41 @@
 # Original agnoster's Theme - https://gist.github.com/3712874
 # Mvnuel : Agnoster + palette personnalisée (hex truecolor).
 # Fond segments : #251810 / #3a2a20 — aligné sur Mvnuel.itermcolors / palette commune.
-# Copie alignée sur ../../configs/mvnuel-agnoster.zsh-theme (install : macos/install.sh).
+# Copie alignée sur ../../linux/configs/mvnuel-agnoster.zsh-theme (install : macos/install.sh).
+
+# --- Palette adaptative ------------------------------------------------------
+# Terminal.app (macOS < Tahoe) ne supporte pas le truecolor 24-bit : les hex
+# #RRGGBB en %K/%F sont mal interprétés et produisent du surlignage vert.
+# On bascule alors sur les 16 couleurs ANSI (déjà customisées dans
+# macos/mvnuel.terminal) + quelques indices xterm-256 pour les nuances.
+# iTerm2, gnome-terminal, Windows Terminal : restent en truecolor (rendu fidèle).
+if [[ "$COLORTERM" == (truecolor|24bit) ]]; then
+  _MVNUEL_TRUECOLOR=1
+elif [[ "$TERM_PROGRAM" == "Apple_Terminal" ]]; then
+  _MVNUEL_TRUECOLOR=0
+else
+  _MVNUEL_TRUECOLOR=1
+fi
+
+if (( _MVNUEL_TRUECOLOR )); then
+  MVNUEL_BG_SEG='#3a2a20'      ; MVNUEL_BG_VENV='#251810'
+  MVNUEL_BG_GIT='#d4a060'      ; MVNUEL_BG_STATUS='#1a1210'
+  MVNUEL_FG_ROOT='#d44040'     ; MVNUEL_FG_USER='#e0855a'
+  MVNUEL_FG_GIT='#AA2727'      ; MVNUEL_FG_VENV='#d4a060'
+  MVNUEL_FG_DIRTY='#e0a840'    ; MVNUEL_FG_CLEAN='#a8c870'
+  MVNUEL_FG_JOB='#60c8d0'      ; MVNUEL_FG_ROOT_SYM='#e0a040'
+  MVNUEL_FG_ERR='#d44040'      ; MVNUEL_FG_PATH='#a8c870'
+else
+  # Terminal.app : palette ANSI (profil mvnuel.terminal) + xterm-256 pour nuances
+  MVNUEL_BG_SEG='237'          ; MVNUEL_BG_VENV='234'
+  MVNUEL_BG_GIT='yellow'       ; MVNUEL_BG_STATUS='black'
+  MVNUEL_FG_ROOT='red'         ; MVNUEL_FG_USER='magenta'
+  MVNUEL_FG_GIT='red'          ; MVNUEL_FG_VENV='yellow'
+  MVNUEL_FG_DIRTY='yellow'     ; MVNUEL_FG_CLEAN='cyan'
+  MVNUEL_FG_JOB='blue'         ; MVNUEL_FG_ROOT_SYM='yellow'
+  MVNUEL_FG_ERR='red'          ; MVNUEL_FG_PATH='cyan'
+fi
+# -----------------------------------------------------------------------------
 
 CURRENT_BG='NONE'
 
@@ -39,9 +73,9 @@ prompt_end() {
 # Nom d’utilisateur uniquement (palette Mvnuel — root / user)
 prompt_context() {
   if [[ $UID -eq 0 ]]; then
-    prompt_segment "#3a2a20" "#d44040" "%n"
+    prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_ROOT" "%n"
   else
-    prompt_segment "#3a2a20" "#e0855a" "%n"
+    prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_USER" "%n"
   fi
 }
 
@@ -59,9 +93,9 @@ prompt_git() {
     dirty=$(parse_git_dirty)
     ref=$(git symbolic-ref HEAD 2> /dev/null) || ref="➦ $(git rev-parse --short HEAD 2> /dev/null)"
     if [[ -n $dirty ]]; then
-      prompt_segment "#d4a060" "#AA2727"
+      prompt_segment "$MVNUEL_BG_GIT" "$MVNUEL_FG_GIT"
     else
-      prompt_segment "#d4a060" "#AA2727"
+      prompt_segment "$MVNUEL_BG_GIT" "$MVNUEL_FG_GIT"
     fi
 
     if [[ -e "${repo_path}/BISECT_LOG" ]]; then
@@ -94,15 +128,15 @@ prompt_bzr() {
         status_all=`bzr status | head -n1 | wc -m`
         revision=`bzr log | head -n2 | tail -n1 | sed 's/^revno: //'`
         if [[ $status_mod -gt 0 ]] ; then
-            prompt_segment "#3a2a20" "#d44040"
+            prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_ERR"
             echo -n "bzr@"$revision "✚ "
         else
             if [[ $status_all -gt 0 ]] ; then
-                prompt_segment "#3a2a20" "#e0a840"
+                prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_DIRTY"
                 echo -n "bzr@"$revision
 
             else
-                prompt_segment "#3a2a20" "#a8c870"
+                prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_CLEAN"
                 echo -n "bzr@"$revision
             fi
         fi
@@ -115,13 +149,13 @@ prompt_hg() {
   if $(hg id >/dev/null 2>&1); then
     if $(hg prompt >/dev/null 2>&1); then
       if [[ $(hg prompt "{status|unknown}") = "?" ]]; then
-        prompt_segment "#3a2a20" "#d44040"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_ERR"
         st='±'
       elif [[ -n $(hg prompt "{status|modified}") ]]; then
-        prompt_segment "#3a2a20" "#e0a840"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_DIRTY"
         st='±'
       else
-        prompt_segment "#3a2a20" "#a8c870"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_CLEAN"
       fi
       echo -n $(hg prompt "☿ {rev}@{branch}") $st
     else
@@ -129,13 +163,13 @@ prompt_hg() {
       rev=$(hg id -n 2>/dev/null | sed 's/[^-0-9]//g')
       branch=$(hg id -b 2>/dev/null)
       if `hg st | grep -q "^\?"`; then
-        prompt_segment "#3a2a20" "#d44040"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_ERR"
         st='±'
       elif `hg st | grep -q "^[MA]"`; then
-        prompt_segment "#3a2a20" "#e0a840"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_DIRTY"
         st='±'
       else
-        prompt_segment "#3a2a20" "#a8c870"
+        prompt_segment "$MVNUEL_BG_SEG" "$MVNUEL_FG_CLEAN"
       fi
       echo -n "☿ $rev@$branch" $st
     fi
@@ -148,28 +182,28 @@ prompt_dir() {
 
 prompt_virtualenv() {
   if [[ -n "${CONDA_PROMPT_MODIFIER:-}" ]]; then
-    prompt_segment "#251810" "#d4a060" ${CONDA_PROMPT_MODIFIER:1:-2}
+    prompt_segment "$MVNUEL_BG_VENV" "$MVNUEL_FG_VENV" ${CONDA_PROMPT_MODIFIER:1:-2}
     return
   fi
   [[ -n "$VIRTUAL_ENV" ]] || return
   local env_name="${VIRTUAL_ENV_PROMPT:-$(basename "$VIRTUAL_ENV")}"
   [[ -n "$env_name" ]] || return
-  prompt_segment "#251810" "#d4a060" "$env_name"
+  prompt_segment "$MVNUEL_BG_VENV" "$MVNUEL_FG_VENV" "$env_name"
 }
 
 prompt_status() {
   local symbols
   symbols=()
-  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{#d44040}%}✘"
-  [[ $UID -eq 0 ]] && symbols+="%{%F{#e0a040}%}⚡"
-  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{#60c8d0}%}⚙"
+  [[ $RETVAL -ne 0 ]] && symbols+="%{%F{$MVNUEL_FG_ERR}%}✘"
+  [[ $UID -eq 0 ]] && symbols+="%{%F{$MVNUEL_FG_ROOT_SYM}%}⚡"
+  [[ $(jobs -l | wc -l) -gt 0 ]] && symbols+="%{%F{$MVNUEL_FG_JOB}%}⚙"
 
-  [[ -n "$symbols" ]] && prompt_segment "#1a1210" "default" "$symbols"
+  [[ -n "$symbols" ]] && prompt_segment "$MVNUEL_BG_STATUS" "default" "$symbols"
 }
 
 prompt_head() {
   echo "\r               "
-  echo "\r %{%F{#a8c870}%}[%64<..<%~%<<]"
+  echo "\r %{%F{$MVNUEL_FG_PATH}%}[%64<..<%~%<<]"
 }
 
 build_prompt() {

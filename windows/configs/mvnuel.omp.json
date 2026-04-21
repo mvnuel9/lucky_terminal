@@ -9,52 +9,16 @@
       "alignment": "left",
       "segments": [
         {
-          "type": "session",
-          "style": "diamond",
-          "leading_diamond": "\ue0b6",
-          "trailing_diamond": "\ue0b0",
-          "foreground": "#1a1210",
-          "background": "#e0a040",
-          "template": " {{ if .SSHSession }}\udb80\udc8c {{ end }}{{ .UserName }} "
-        },
-        {
           "type": "path",
-          "style": "powerline",
-          "powerline_symbol": "\ue0b0",
-          "foreground": "#f0dfc0",
-          "background": "#5f5f5f",
+          "style": "plain",
+          "foreground": "#a8c870",
+          "template": " [{{ .Path }}] ",
           "properties": {
-            "style": "folder"
-          },
-          "template": " \uf07b {{ .Path }} "
-        },
-        {
-          "type": "git",
-          "style": "powerline",
-          "powerline_symbol": "\ue0b0",
-          "foreground": "#f0dfc0",
-          "background": "#875f5f",
-          "properties": {
-            "fetch_status": true,
-            "fetch_upstream_icon": true
-          },
-          "template": " {{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} *{{ end }} "
-        },
-        {
-          "type": "python",
-          "style": "powerline",
-          "powerline_symbol": "\ue0b0",
-          "foreground": "#1a1210",
-          "background": "#afaf87",
-          "template": " \ue235 {{ if .Venv }}{{ .Venv }} {{ end }}{{ .Full }} "
-        },
-        {
-          "type": "status",
-          "style": "powerline",
-          "powerline_symbol": "\ue0b0",
-          "foreground": "#f0dfc0",
-          "background": "#d75f5f",
-          "template": " {{ if .Error }}\uf00d {{ .Code }}{{ else }}\uf00c{{ end }} "
+            "style": "full",
+            "max_width": 64,
+            "folder_icon": "",
+            "home_icon": "~"
+          }
         }
       ]
     },
@@ -64,10 +28,58 @@
       "newline": true,
       "segments": [
         {
-          "type": "text",
-          "style": "plain",
+          "type": "status",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "default",
+          "background": "#1a1210",
+          "template": "{{ if gt .Code 0 }} \u2718 {{ .Code }} {{ end }}"
+        },
+        {
+          "type": "root",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
           "foreground": "#e0a040",
-          "template": "\u276f "
+          "background": "#1a1210",
+          "template": " \u26a1 "
+        },
+        {
+          "type": "python",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "#d4a060",
+          "background": "#251810",
+          "template": "{{ if .Venv }} {{ .Venv }} {{ end }}",
+          "properties": {
+            "fetch_virtual_env": true,
+            "fetch_version": false,
+            "display_mode": "environment",
+            "folder_name_fallback": false
+          }
+        },
+        {
+          "type": "session",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "#e0855a",
+          "background": "#3a2a20",
+          "template": " {{ .UserName }} ",
+          "foreground_templates": [
+            "{{ if .Root }}#d44040{{ else }}#e0855a{{ end }}"
+          ]
+        },
+        {
+          "type": "git",
+          "style": "powerline",
+          "powerline_symbol": "\ue0b0",
+          "foreground": "#AA2727",
+          "background": "#d4a060",
+          "template": " {{ .HEAD }}{{ if .BranchStatus }} {{ .BranchStatus }}{{ end }}{{ if .Working.Changed }} \u00b1{{ end }} ",
+          "properties": {
+            "fetch_status": true,
+            "fetch_upstream_icon": true,
+            "branch_icon": "\ue0a0 "
+          }
         }
       ]
     }

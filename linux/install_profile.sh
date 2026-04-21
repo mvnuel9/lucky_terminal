@@ -2,21 +2,23 @@
 
 set -euo pipefail
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
 # Install plug-ins (you can git-pull to update them later).
 (cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-syntax-highlighting)
 (cd ~/.oh-my-zsh/custom/plugins && git clone https://github.com/zsh-users/zsh-autosuggestions)
 
 # Replace the configs with the saved one (sans sudo : le tout doit rester à l’utilisateur).
-cp configs/.zshrc ~/.zshrc
+cp "${SCRIPT_DIR}/configs/.zshrc" ~/.zshrc
 
 # Couleurs ls (GNU dircolors)
-cp configs/dircolors ~/.dircolors
+cp "${SCRIPT_DIR}/configs/dircolors" ~/.dircolors
 
 # Thème Agnoster Mvnuel
-cp configs/mvnuel-agnoster.zsh-theme ~/.oh-my-zsh/themes/mvnuel-agnoster.zsh-theme
+cp "${SCRIPT_DIR}/configs/mvnuel-agnoster.zsh-theme" ~/.oh-my-zsh/themes/mvnuel-agnoster.zsh-theme
 
 # Color Theme
-dconf load /org/gnome/terminal/legacy/profiles:/:fb358fc9-49ea-4252-ad34-1d25c649e633/ < configs/terminal_profile.dconf
+dconf load /org/gnome/terminal/legacy/profiles:/:fb358fc9-49ea-4252-ad34-1d25c649e633/ < "${SCRIPT_DIR}/configs/terminal_profile.dconf"
 
 # Add it to the default list in the terminal
 add_list_id=fb358fc9-49ea-4252-ad34-1d25c649e633

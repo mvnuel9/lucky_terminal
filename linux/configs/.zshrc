@@ -69,7 +69,7 @@ plugins=(
 
 source $ZSH/oh-my-zsh.sh
 
-# ls : palette Mvnuel (~/.dircolors installé par install_profile.sh)
+# ls : palette Mvnuel (~/.dircolors installé par linux/install_profile.sh)
 if [[ -f ~/.dircolors ]] && command -v dircolors >/dev/null; then
   eval "$(dircolors -b ~/.dircolors)"
 fi

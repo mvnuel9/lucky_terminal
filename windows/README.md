@@ -1,85 +1,115 @@
-# Lucky Terminal - Windows (PowerShell)
+# Lucky Terminal — Windows
 
-Vous etes sur Windows ? Utilisez uniquement les scripts de ce dossier.
+![Aperçu du terminal PowerShell](./powershell.png)
 
-Ce dossier est autonome, comme `macos/`, et contient:
+Pour **Windows**, tout se passe ici : **PowerShell**, thème **Oh My Posh** façon Automnale, modules utiles (`Terminal-Icons`, navigation rapide, ligne de commande confortable) et un exemple de profil **Windows Terminal**. Pas besoin de lancer les scripts **Linux** ou **macOS** ce dossier est autonome.
 
-- `install.ps1`: installation du profil Mvnuel pour PowerShell
-- `uninstall.ps1`: desinstallation partielle avec sauvegardes
-- `purge_profile.ps1`: nettoyage residuel
-- `configs/`: profil PowerShell, theme Oh My Posh, exemple Windows Terminal
+---
 
-## Prerequis
+## 🗂️ Arborescence du dossier
 
-- Windows PowerShell 5.1 (supporte) ou PowerShell 7+ (recommande)
-- Politique d'execution qui autorise les scripts du user (`RemoteSigned`)
-- Connexion Internet (modules PowerShell + **winget** pour Oh My Posh)
-- **RobotoMono Nerd Font** (recommande) : telechargee depuis [nerdfonts.com](https://www.nerdfonts.com/font-downloads), puis soit installee a la main, soit en passant le dossier des `.ttf` a l'installateur avec **`-NerdFontDirectory`** (voir ci-dessous)
+```
+windows/
+├── configs/
+│   ├── Microsoft.PowerShell_profile.ps1
+│   ├── mvnuel.omp.json
+│   └── windows-terminal-settings.json
+├── fonts/
+│   ├── README.md
+│   └── RobotoMono/          # RobotoMono Nerd Font (glyphes pour le thème)
+├── _common.ps1              # Helpers partagés (dot-sourcé)
+├── install.ps1              # Orchestre les trois étapes ci-dessous
+├── install_fonts.ps1        # Enregistre les polices Nerd Font
+├── install_terminal.ps1     # Oh My Posh + modules PowerShell
+├── install_profile.ps1      # $PROFILE, thème Oh My Posh, Windows Terminal
+├── purge_profile.ps1
+├── uninstall.ps1
+└── README.md
+```
 
-Notes :
+Le dossier **`fonts/`** regroupe les polices **Nerd Font** compatibles avec Oh My Posh et les icônes du terminal ; l’installateur peut aussi pointer vers un dossier de **`.ttf`** que tu as déjà téléchargé ailleurs.
 
-- Oh My Posh ne s’installe **plus** via `Install-Module oh-my-posh` (module deprecie). Le script utilise **`winget install JanDeDobbeleer.OhMyPosh`** puis le profil appelle `oh-my-posh init powershell|pwsh` (voir [migration](https://ohmyposh.dev/docs/migrating)).
-- Sur PowerShell 5.1, `install.ps1` force TLS 1.2, installe `NuGet` si besoin, puis installe les modules depuis PSGallery.
+---
 
-## Installation
+## 💡 En clair : à quoi sert chaque script
 
-Depuis la racine du depot:
+### Mode one-click (installation en un clic)
+- **`install.ps1`** : le **parcours tout-en-un** — enchaîne les trois étapes modulaires ci-dessous et forwarde les paramètres (`-Yes`, `-ForcePSReadLineUpdate`, `-NerdFontDirectory`).
+
+### Mode étapes (pour debugger / installer à la carte)
+- **`install_fonts.ps1`** : enregistre **RobotoMono Nerd Font** depuis `fonts/RobotoMono/` (ou `-NerdFontDirectory`) dans les polices utilisateur Windows. Détecte les polices déjà installées pour ne pas doublonner.
+- **`install_terminal.ps1`** : retire l'ancien module `oh-my-posh` déprécié, installe le **binaire Oh My Posh** via `winget`, puis installe les modules PowerShell (`Terminal-Icons`, `z`, `PSReadLine`).
+- **`install_profile.ps1`** : copie le thème Oh My Posh vers `$HOME\.config\mvnuel\`, sauvegarde et remplace `$PROFILE`, crée `aliases.ps1`/`functions.ps1`, propose d'écraser le `settings.json` de Windows Terminal.
+
+### Désinstallation
+- **`uninstall.ps1`** : retire ce que le projet a ajouté, en **gardant des sauvegardes** là où c'est prévu pour que tu puisses récupérer l'ancien profil si besoin.
+- **`purge_profile.ps1`** : nettoyage plus poussé quand il reste des réglages ou fichiers liés au profil (option pour l'historique si tu veux repartir vraiment à plat).
+
+Les fichiers dans **`configs/`** sont les **modèles** copiés ou fusionnés vers ton utilisateur (`$PROFILE`, `.config`, etc.) selon ce que fait le script.
+Le fichier **`_common.ps1`** contient des helpers partagés (`Confirm-Step`, `Ensure-Dir`, `Test-IsWindowsHost`, etc.) et n'est pas destiné à être lancé directement.
+
+---
+
+## 📌 Prérequis
+
+- **PowerShell** 5.1 ou de préférence **7+**
+- Politique d’exécution qui permet de lancer les scripts utilisateur (souvent `RemoteSigned` en local)
+- **Internet** pour winget / modules / téléchargements
+- **Police Nerd Font** : le dépôt fournit **RobotoMono** sous `fonts/RobotoMono/` ; tu peux aussi passer un dossier contenant les `.ttf` à l’installation (voir ci-dessous)
+
+---
+
+## ⌨️ Commandes
+
+**Installation one-click** (depuis la racine du dépôt, dans PowerShell ou en invoquant `powershell` / `pwsh`) :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1
 ```
 
-Mode non interactif :
+**Sans questions** :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes
 ```
 
-`-NoProfile` evite de charger un ancien `$PROFILE` (ex. encore en `Set-PoshPrompt`) pendant l’installation.
+**Installation étape par étape** (même ordre que le script maître) :
 
-Si PSReadLine est deja en version suffisante (>= 2.1.0), le script **ne relance pas** `Install-Module PSReadLine` par defaut (evite verrouillage DLL). Pour forcer une mise a jour :
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_fonts.ps1 -Yes
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_terminal.ps1 -Yes
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_profile.ps1 -Yes
+```
+
+`-NoProfile` évite de charger un ancien profil pendant l’installation (anciennes invites du type `Set-PoshPrompt`, etc.).
+
+**Forcer une mise à jour de PSReadLine** (si tu as un souci de version verrouillée) :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes -ForcePSReadLineUpdate
 ```
 
-Apres avoir extrait les fichiers **RobotoMono** (fichiers `.ttf`), enregistre-les dans Windows et applique le modele en une fois :
+**Indiquer un dossier de polices déjà extraits** (fichiers `.ttf`) :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes -NerdFontDirectory "$env:USERPROFILE\Downloads\RobotoMono"
 ```
 
-(adapte le chemin si ton dossier n'est pas sous `Downloads\RobotoMono`.)
+(adapte le chemin à ton dossier.)
 
-Le script:
-
-1. retire l’ancien module `oh-my-posh` (s’il est encore la) et installe le **binaire** Oh My Posh via **winget**
-2. installe les modules `Terminal-Icons`, `z`, et `PSReadLine` si absent ou < 2.1.0 (sinon conserve ; `-ForcePSReadLineUpdate` pour forcer une mise a jour)
-3. copie le theme vers `$HOME\.config\mvnuel\mvnuel.omp.json`
-4. sauvegarde puis remplace `$PROFILE`
-5. initialise `aliases.ps1` et `functions.ps1`
-6. propose d'ecraser `settings.json` de Windows Terminal avec un profil Mvnuel de demonstration (police par defaut : **RobotoMono Nerd Font**)
-
-## Windows Terminal
-
-Le fichier `windows/configs/windows-terminal-settings.json` est un modele complet.
-La police par defaut est **RobotoMono Nerd Font** (glyphes pour Oh My Posh / Terminal-Icons). Si Windows Terminal affiche une alerte « font not found », enregistre les polices (clic droit sur les `.ttf` > Installer pour tous les utilisateurs, ou utilise **`-NerdFontDirectory`** avec `install.ps1` comme ci-dessus).
-
-Si tu as deja une config riche, prefere fusionner manuellement la section `schemes` et le profil PowerShell plutot que d'ecraser tout le fichier.
-
-## Desinstallation
+**Désinstallation** :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\uninstall.ps1
 ```
 
-Sans invites :
+**Sans invites** :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\uninstall.ps1 -Yes
 ```
 
-## Purge residuelle
+**Purge résiduelle du profil** :
 
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\purge_profile.ps1
@@ -90,3 +120,23 @@ Avec historique PSReadLine :
 ```powershell
 powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\purge_profile.ps1 -Yes -WithHistory
 ```
+
+---
+
+## 🖥️ Windows Terminal
+
+Le fichier **`configs/windows-terminal-settings.json`** est un **exemple complet**. Si tu as déjà une config riche, il vaut mieux **fusionner** les couleurs et le profil PowerShell plutôt que d’écraser tout le fichier d’un coup.
+
+Si Windows Terminal affiche une alerte « font not found », installe les polices depuis `fonts/RobotoMono/` (clic droit sur les `.ttf` → installer) ou repasse par **`-NerdFontDirectory`** à l’installation.
+
+---
+
+## 🌍 Autres plateformes & doc générale
+
+- **Linux** : `[linux/](../linux/)`
+- **macOS** : `[macos/](../macos/)`
+- **Vue d’ensemble** : [README à la racine](../README.md)
+
+Références : [Oh My Posh](https://ohmyposh.dev/) · [Nerd Fonts](https://www.nerdfonts.com/) · [Télécharger RobotoMono Nerd Font](https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/RobotoMono.zip)
+
+Bon terminal ! 🍀

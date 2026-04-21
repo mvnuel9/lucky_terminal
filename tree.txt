@@ -1,0 +1,59 @@
+├── linux
+│   ├── configs
+│   │   ├── .vimrc
+│   │   ├── .zshrc
+│   │   ├── dircolors
+│   │   ├── mvnuel-agnoster.zsh-theme
+│   │   └── terminal_profile.dconf
+│   ├── fonts
+│   │   ├── RobotoMono/
+│   │   └── install.sh
+│   ├── install.sh              # Orchestre les trois étapes
+│   ├── install_powerline.sh    # Polices, Vim, powerline-status
+│   ├── install_terminal.sh     # Zsh + Oh My Zsh
+│   ├── install_profile.sh      # Plug-ins, ~/.zshrc, thème, profil GNOME
+│   ├── linux.png
+│   ├── purge_zsh.sh
+│   ├── README.md
+│   └── uninstall.sh
+├── macos
+│   ├── configs
+│   │   ├── .vimrc
+│   │   ├── .zshrc
+│   │   ├── dircolors
+│   │   ├── mvnuel-agnoster.zsh-theme
+│   │   └── README.md
+│   ├── fonts
+│   │   ├── RobotoMono/
+│   │   └── install.sh
+│   ├── install.sh              # Orchestre les trois étapes
+│   ├── install_powerline.sh    # Homebrew deps + pipx + polices + .vimrc
+│   ├── install_terminal.sh     # Oh My Zsh + aliases/functions
+│   ├── install_profile.sh      # Plug-ins Zsh, thème Mvnuel, Terminal.app
+│   ├── macos.png
+│   ├── Mvnuel.itermcolors      # Preset iTerm2
+│   ├── mvnuel.terminal         # Profil Terminal.app
+│   ├── purge_zsh.sh
+│   ├── README.md
+│   └── uninstall.sh
+├── windows
+│   ├── configs
+│   │   ├── Microsoft.PowerShell_profile.ps1
+│   │   ├── mvnuel.omp.json
+│   │   └── windows-terminal-settings.json
+│   ├── fonts
+│   │   ├── RobotoMono/
+│   │   └── README.md
+│   ├── _common.ps1             # Helpers partagés (dot-sourcé)
+│   ├── install.ps1             # Orchestre les trois étapes
+│   ├── install_fonts.ps1       # Enregistre les polices Nerd Font
+│   ├── install_terminal.ps1    # Oh My Posh + modules PowerShell
+│   ├── install_profile.ps1     # $PROFILE, thème, Windows Terminal
+│   ├── powershell.png
+│   ├── purge_profile.ps1
+│   ├── README.md
+│   └── uninstall.ps1
+├── .gitattributes
+├── header.svg
+├── README.md
+└── tree.txt

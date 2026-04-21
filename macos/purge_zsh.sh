@@ -2,7 +2,7 @@
 #
 # macOS — Supprime les dossiers et fichiers zsh / Oh My Zsh restants pour repartir sur une
 # base propre avant une réinstallation (après ./macos/uninstall.sh ou installation partielle).
-# Équivalent de ../purge_zsh.sh (Linux), chemins home identiques.
+# Équivalent de ../linux/purge_zsh.sh (Linux), chemins home identiques.
 #
 # Usage (depuis la racine du dépôt) :
 #   ./macos/purge_zsh.sh
@@ -107,4 +107,4 @@ done
 
 echo ""
 echo "Terminé. Tu peux relancer ./macos/install.sh (depuis la racine du dépôt) pour réinstaller le profil."
-echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors."
+echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors, ~/.dircolors.terminal."

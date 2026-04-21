@@ -4,9 +4,9 @@
 # propre avant une réinstallation (après ./uninstall.sh ou installation partielle).
 #
 # Usage :
-#   ./purge_zsh.sh           # affiche ce qui sera supprimé et demande confirmation
-#   ./purge_zsh.sh --yes     # sans invite
-#   ./purge_zsh.sh --yes --with-history   # supprime aussi ~/.zsh_history
+#   ./linux/purge_zsh.sh           # affiche ce qui sera supprimé et demande confirmation
+#   ./linux/purge_zsh.sh --yes     # sans invite
+#   ./linux/purge_zsh.sh --yes --with-history   # supprime aussi ~/.zsh_history
 #
 set -euo pipefail
 
@@ -100,5 +100,5 @@ for p in "${targets[@]}"; do
 done
 
 echo ""
-echo "Terminé. Tu peux relancer ./install.sh (ou les scripts d’installation) depuis une session bash."
+echo "Terminé. Tu peux relancer ./linux/install.sh (ou les scripts sous linux/) depuis une session bash."
 echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors."
