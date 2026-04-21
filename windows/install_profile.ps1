@@ -3,7 +3,13 @@ param(
     [switch]$Yes
 )
 
-$scriptDir = Split-Path -Parent -LiteralPath $PSCommandPath
+# Détermination du répertoire du script (compatible PS 5.1+)
+# $PSScriptRoot fonctionne sur PS 6+, fallback sur $MyInvocation.MyCommand.Path pour PS 5.1
+$scriptDir = $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($scriptDir)) {
+    $scriptDir = Split-Path -Parent -LiteralPath $MyInvocation.MyCommand.Path
+}
+# Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
 if (-not (Test-IsWindowsHost)) {
