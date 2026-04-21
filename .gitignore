@@ -47,7 +47,7 @@ $RECYCLE.BIN/
 logs/
 npm-debug.log*
 
-# ──────────────── Secrets (par précaution) ────────────────
+# ──────────────── Secrets ────────────────
 .env
 .env.local
 .env.*.local
