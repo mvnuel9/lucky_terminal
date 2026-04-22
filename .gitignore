@@ -61,3 +61,4 @@ secrets.json
 *.temp
 TODO.md
 suggestion.md
+release/
