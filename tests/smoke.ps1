@@ -18,14 +18,9 @@
       1 : au moins un test échoue
       3 : mauvais usage
 
-.PARAMETER Verbose
-    Affiche les détails ligne par ligne (hérité de [CmdletBinding]).
-
 .EXAMPLE
     ./tests/smoke.ps1
 #>
-[CmdletBinding()]
-param()
 
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'

@@ -20,7 +20,6 @@
     .\scripts\lint.ps1
     .\scripts\lint.ps1 -Fix
 #>
-[CmdletBinding()]
 param(
     [switch]$Fix
 )

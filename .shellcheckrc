@@ -6,8 +6,11 @@ shell=bash
 
 # Active des checks optionnels utiles côté hygiène.
 enable=quote-safe-variables
-enable=require-variable-braces
 enable=avoid-nullary-conditions
+
+# `require-variable-braces` (SC2250) volontairement désactivé : règle purement
+# stylistique, `"$VAR"` non ambigu fonctionne parfaitement. On évite une refactorisation
+# massive `${VAR}` partout pour un gain nul côté robustesse.
 
 # Ignore les sources dynamiques (ex: ~/.zshrc, .aliases) — ShellCheck ne peut pas les résoudre
 # statiquement et leur contenu est celui de l'utilisateur, pas du dépôt.
