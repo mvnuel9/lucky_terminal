@@ -36,4 +36,4 @@ dconf write /org/gnome/terminal/legacy/profiles:/list "$new_list"
 dconf write /org/gnome/terminal/legacy/profiles:/default "'$add_list_id'"
 
 # Switch the shell.
-chsh -s $(which zsh)
+chsh -s "$(command -v zsh)"
