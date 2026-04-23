@@ -18,9 +18,9 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 
 Assert-Windows
 
-$fontsScript    = Join-Path $scriptDir "install_fonts.ps1"
+$fontsScript = Join-Path $scriptDir "install_fonts.ps1"
 $terminalScript = Join-Path $scriptDir "install_terminal.ps1"
-$profileScript  = Join-Path $scriptDir "install_profile.ps1"
+$profileScript = Join-Path $scriptDir "install_profile.ps1"
 
 Write-Host "==> [1/3] Polices Nerd Font..."
 & $fontsScript -Yes:$Yes -NerdFontDirectory $NerdFontDirectory

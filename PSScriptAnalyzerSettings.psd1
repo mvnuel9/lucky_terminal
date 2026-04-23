@@ -28,7 +28,14 @@
 
         # BOM UTF-8 non requis sur pwsh 7+ cross-platform. Nos fichiers sont UTF-8
         # sans BOM (LF/CRLF géré via .gitattributes).
-        'PSUseBOMForUnicodeEncodedFile'
+        'PSUseBOMForUnicodeEncodedFile',
+
+        # Paramètres déclarés mais non utilisés : les scripts Windows acceptent -Yes
+        # pour maintenir la cohérence de l'API CLI (tous les scripts acceptent
+        # --yes / -Yes) même quand la sous-étape n'a pas de confirmation à ignorer.
+        # Règle trop stricte pour notre cas d'usage ; à rétablir une fois tous les
+        # paramètres branchés via Confirm-Step.
+        'PSReviewUnusedParameter'
     )
 
     Rules = @{

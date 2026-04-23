@@ -9,13 +9,13 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
 
 # --- Codes de sortie (convention projet, alignée avec scripts/_common.sh) ---
-$Script:Lucky_Exit_OK             = 0
-$Script:Lucky_Exit_Generic        = 1
-$Script:Lucky_Exit_MissingTool    = 2
-$Script:Lucky_Exit_Usage          = 3
-$Script:Lucky_Exit_Cancelled      = 10
-$Script:Lucky_Exit_UnsupportedOS  = 20
-$Script:Lucky_Exit_MissingFile    = 21
+$Script:Lucky_Exit_OK = 0
+$Script:Lucky_Exit_Generic = 1
+$Script:Lucky_Exit_MissingTool = 2
+$Script:Lucky_Exit_Usage = 3
+$Script:Lucky_Exit_Cancelled = 10
+$Script:Lucky_Exit_UnsupportedOS = 20
+$Script:Lucky_Exit_MissingFile = 21
 
 function Invoke-Die {
     [CmdletBinding()]

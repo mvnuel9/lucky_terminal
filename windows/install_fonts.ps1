@@ -65,7 +65,7 @@ function Test-RobotoMonoNerdFontInstalled {
         $hit = Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue |
             Where-Object {
                 $_.Extension -match '^\.(ttf|otf)$' -and
-                    $_.Name -match '(?i)RobotoMono' -and $_.Name -match '(?i)Nerd'
+                $_.Name -match '(?i)RobotoMono' -and $_.Name -match '(?i)Nerd'
             } |
             Select-Object -First 1
         if ($hit) {
