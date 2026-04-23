@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 #
-# Lance shellcheck et shfmt sur les scripts Bash du dépôt.
+# Lance shellcheck + shfmt sur les scripts Bash et (si pwsh est dispo)
+# PSScriptAnalyzer via scripts/lint.ps1.
 #
 # Usage :
-#   ./scripts/lint.sh              # vérifie (rapport)
-#   ./scripts/lint.sh --fix        # applique shfmt --write pour reformater
+#   ./scripts/lint.sh                  # vérifie (rapport)
+#   ./scripts/lint.sh --fix            # applique shfmt -w + Invoke-Formatter
+#   ./scripts/lint.sh --skip-ps        # n'appelle pas lint.ps1 même si pwsh dispo
 #   ./scripts/lint.sh --help
 #
 # Détecte automatiquement les scripts via `git ls-files '*.sh'` pour rester
@@ -16,13 +18,18 @@ REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT" || exit 1
 
 FIX_MODE=0
+SKIP_PS=0
 for arg in "$@"; do
   case "$arg" in
     --fix)
       FIX_MODE=1
       ;;
+    --skip-ps)
+      SKIP_PS=1
+      ;;
     -h | --help)
-      grep '^#' "$0" | head -15
+      # N'affiche que le bloc de commentaires de tête (jusqu'à la première ligne non-#).
+      awk '/^#/{print; next} {exit}' "$0"
       exit 0
       ;;
     *)
@@ -94,6 +101,25 @@ else
   log_warn "  Go install    : go install mvdan.cc/sh/v3/cmd/shfmt@latest"
   log_warn "  Binaire       : https://github.com/mvdan/sh/releases"
   if [[ $EXIT_CODE -eq 0 ]]; then EXIT_CODE=2; fi
+fi
+
+# --- PSScriptAnalyzer via pwsh (si disponible) ---
+if [[ $SKIP_PS -eq 0 ]] && command -v pwsh >/dev/null 2>&1; then
+  log_info "pwsh détecté : délégation à scripts/lint.ps1 pour PSScriptAnalyzer."
+  PS_ARGS=()
+  if [[ $FIX_MODE -eq 1 ]]; then
+    PS_ARGS+=("-Fix")
+  fi
+  ps_rc=0
+  pwsh -NoProfile -File "${REPO_ROOT}/scripts/lint.ps1" "${PS_ARGS[@]}" || ps_rc=$?
+  if [[ $ps_rc -eq 2 ]]; then
+    log_warn "PSScriptAnalyzer manquant : étape PS ignorée (installer via 'Install-Module PSScriptAnalyzer')."
+    if [[ $EXIT_CODE -eq 0 ]]; then EXIT_CODE=2; fi
+  elif [[ $ps_rc -ne 0 ]]; then
+    EXIT_CODE=1
+  fi
+elif [[ $SKIP_PS -eq 0 ]]; then
+  log_info "pwsh introuvable : lint PowerShell ignoré. (Utilise scripts/lint.ps1 depuis Windows / pwsh installé.)"
 fi
 
 exit "$EXIT_CODE"
