@@ -76,7 +76,7 @@ if command -v dconf >/dev/null 2>&1; then
   log_info "[4/6] Retrait du profil GNOME Terminal « Mvnuel » (dconf)..."
   if [[ "${LUCKY_DRY_RUN:-0}" -eq 1 ]]; then
     log_info "[dry-run] étape Python/dconf non exécutée (profile=$MVNUEL_PROFILE_ID)"
-  elif python3 - "$MVNUEL_PROFILE_ID" <<'PY'
+  elif python3 - "$MVNUEL_PROFILE_ID" <<'PY'; then
 import subprocess
 import sys
 import ast
@@ -140,7 +140,6 @@ else:
     )
     print("Profil Mvnuel retiré et entrée dconf nettoyée.")
 PY
-  then
     :
   else
     log_warn "    (avertissement : la partie dconf a signalé un problème — vérifiez les profils dans Préférences du terminal.)"

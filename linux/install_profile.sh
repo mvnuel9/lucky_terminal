@@ -69,7 +69,7 @@ log_info "[3/3] Profil GNOME Terminal « Mvnuel » via dconf..."
 if [[ "${LUCKY_DRY_RUN:-0}" -eq 1 ]]; then
   log_info "[dry-run] dconf load/write sur /org/gnome/terminal/legacy/profiles:/"
 else
-  dconf load /org/gnome/terminal/legacy/profiles:/:fb358fc9-49ea-4252-ad34-1d25c649e633/ < "${CONFIGS}/terminal_profile.dconf"
+  dconf load /org/gnome/terminal/legacy/profiles:/:fb358fc9-49ea-4252-ad34-1d25c649e633/ <"${CONFIGS}/terminal_profile.dconf"
 
   add_list_id=fb358fc9-49ea-4252-ad34-1d25c649e633
   old_list=$(dconf read /org/gnome/terminal/legacy/profiles:/list | tr -d "]")

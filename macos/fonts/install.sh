@@ -15,8 +15,8 @@ else
 fi
 
 echo "Copying fonts..."
-find "$powerline_fonts_dir" \( -name "${prefix}*.[ot]tf" -or -name "${prefix}*.pcf.gz" \) -type f -print0 |
-  xargs -0 -n1 -I % cp "%" "$font_dir/"
+find "$powerline_fonts_dir" \( -name "${prefix}*.[ot]tf" -or -name "${prefix}*.pcf.gz" \) -type f -print0 \
+  | xargs -0 -n1 -I % cp "%" "$font_dir/"
 
 if command -v fc-cache >/dev/null 2>&1; then
   echo "Resetting font cache, this may take a moment..."

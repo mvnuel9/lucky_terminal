@@ -55,16 +55,17 @@ try {
     if ($gitAvailable) {
         $scripts = git ls-files '*.ps1' '*.psm1' '*.psd1' 2>$null
     }
-    if (-not $scripts -or $scripts.Count -eq 0) {
-        $scripts = Get-ChildItem -Path $repoRoot -Recurse -Include *.ps1, *.psm1, *.psd1 -File `
-        | Where-Object { $_.FullName -notmatch '\\\.git\\' } `
-        | ForEach-Object { $_.FullName.Substring($repoRoot.Length + 1) }
+    if (-not $scripts -or @($scripts).Count -eq 0) {
+        $scripts = Get-ChildItem -Path $repoRoot -Recurse -Include *.ps1, *.psm1, *.psd1 -File |
+            Where-Object { $_.FullName -notmatch '\\\.git\\' } |
+            ForEach-Object { $_.FullName.Substring($repoRoot.Length + 1) }
     }
 } finally {
     Pop-Location
 }
 
-if (-not $scripts -or $scripts.Count -eq 0) {
+$scripts = @($scripts)
+if ($scripts.Count -eq 0) {
     Write-Warn 'Aucun script PowerShell trouvé — rien à linter.'
     exit 0
 }
@@ -90,8 +91,8 @@ foreach ($relPath in $scripts) {
         }
     }
 
-    $issues = Invoke-ScriptAnalyzer -Path $fullPath -Settings $settingsFile -ErrorAction SilentlyContinue
-    if ($issues) {
+    $issues = @(Invoke-ScriptAnalyzer -Path $fullPath -Settings $settingsFile -ErrorAction SilentlyContinue)
+    if ($issues.Count -gt 0) {
         $exitCode = 1
         Write-Err "$relPath : $($issues.Count) problème(s)"
         $issues | Format-Table -AutoSize -Property Severity, Line, RuleName, Message

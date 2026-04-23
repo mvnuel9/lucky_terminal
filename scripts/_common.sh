@@ -22,20 +22,20 @@ LUCKY_COMMON_LOADED=1
 # 10+  : interactions utilisateur (refus, annulation)
 # 20+  : pré-conditions système (OS, permissions)
 readonly LUCKY_EXIT_OK=0
-readonly LUCKY_EXIT_GENERIC=1           # erreur générique non classée
-readonly LUCKY_EXIT_MISSING_TOOL=2      # commande/dépendance absente
-readonly LUCKY_EXIT_USAGE=3             # mauvais usage CLI
-readonly LUCKY_EXIT_CANCELLED=10        # refus utilisateur (confirm répondu non)
-readonly LUCKY_EXIT_UNSUPPORTED_OS=20   # OS / plateforme non prise en charge
-readonly LUCKY_EXIT_MISSING_FILE=21     # fichier attendu absent du dépôt
+readonly LUCKY_EXIT_GENERIC=1         # erreur générique non classée
+readonly LUCKY_EXIT_MISSING_TOOL=2    # commande/dépendance absente
+readonly LUCKY_EXIT_USAGE=3           # mauvais usage CLI
+readonly LUCKY_EXIT_CANCELLED=10      # refus utilisateur (confirm répondu non)
+readonly LUCKY_EXIT_UNSUPPORTED_OS=20 # OS / plateforme non prise en charge
+readonly LUCKY_EXIT_MISSING_FILE=21   # fichier attendu absent du dépôt
 
 # --- Couleurs (activées si stderr est un TTY et NO_COLOR non défini) ----
 if [[ -t 2 ]] && [[ -z "${NO_COLOR:-}" ]]; then
   _LK_COL_RESET=$'\033[0m'
-  _LK_COL_INFO=$'\033[36m'   # cyan
-  _LK_COL_OK=$'\033[32m'     # green
-  _LK_COL_WARN=$'\033[33m'   # yellow
-  _LK_COL_ERROR=$'\033[31m'  # red
+  _LK_COL_INFO=$'\033[36m'  # cyan
+  _LK_COL_OK=$'\033[32m'    # green
+  _LK_COL_WARN=$'\033[33m'  # yellow
+  _LK_COL_ERROR=$'\033[31m' # red
 else
   _LK_COL_RESET=''
   _LK_COL_INFO=''

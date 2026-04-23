@@ -115,9 +115,16 @@ $commonPath = Join-Path -Path $repoRoot -ChildPath 'windows\_common.ps1'
 if (-not (Test-Path -LiteralPath $commonPath)) {
     Write-Warn "windows/_common.ps1 introuvable — étape 2 ignorée."
 } else {
-    Invoke-Test -Label '_common.ps1 se charge sans erreur' -Body {
+    # IMPORTANT : le dot-source doit avoir lieu au scope du script (pas dans un
+    # scriptblock Invoke-Test), sinon les fonctions ajoutées restent locales au
+    # scriptblock et ne sont plus visibles après.
+    $script:Total++
+    try {
         . $commonPath
-        return $true
+        Write-Pass '_common.ps1 se charge sans erreur'
+    } catch {
+        $script:Failures++
+        Write-Fail '_common.ps1 se charge sans erreur' $_.Exception.Message
     }
 
     $expectedFunctions = @(
