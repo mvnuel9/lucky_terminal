@@ -1,0 +1,20 @@
+# Configuration ShellCheck pour Lucky Terminal
+# Doc : https://www.shellcheck.net/wiki/Directive
+
+# On cible Bash (scripts utilisent #!/usr/bin/env bash).
+shell=bash
+
+# Active des checks optionnels utiles côté hygiène.
+enable=quote-safe-variables
+enable=require-variable-braces
+enable=avoid-nullary-conditions
+
+# Ignore les sources dynamiques (ex: ~/.zshrc, .aliases) — ShellCheck ne peut pas les résoudre
+# statiquement et leur contenu est celui de l'utilisateur, pas du dépôt.
+# SC1091 = "Not following: file was not specified as input (see shellcheck -x)"
+disable=SC1091
+
+# SC2155 = "Declare and assign separately to avoid masking return values."
+# Volontairement tolérée : la plupart des `local foo=$(cmd)` sont inoffensifs et la
+# refactorisation massive apporterait peu de valeur.
+disable=SC2155
