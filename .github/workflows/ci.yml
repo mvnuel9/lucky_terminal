@@ -1,0 +1,88 @@
+name: CI
+
+on:
+  push:
+    branches: [master, main, features]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint-bash:
+    name: Lint Bash (shellcheck + shfmt)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install shellcheck
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y shellcheck
+
+      - name: Install shfmt
+        run: |
+          mkdir -p "$HOME/.local/bin"
+          curl -fsSL --proto '=https' --tlsv1.2 --retry 3 --retry-delay 2 \
+            "https://github.com/mvdan/sh/releases/download/v3.8.0/shfmt_v3.8.0_linux_amd64" \
+            -o "$HOME/.local/bin/shfmt"
+          chmod +x "$HOME/.local/bin/shfmt"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+
+      - name: Run scripts/lint.sh --skip-ps
+        run: ./scripts/lint.sh --skip-ps
+
+  lint-powershell:
+    name: Lint PowerShell (PSScriptAnalyzer)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          if (-not (Get-Module -ListAvailable -Name PSScriptAnalyzer)) {
+              Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+          }
+
+      - name: Run scripts/lint.ps1
+        shell: pwsh
+        run: ./scripts/lint.ps1
+
+  smoke-linux:
+    name: Smoke Linux
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests/smoke.sh
+        run: bash tests/smoke.sh
+
+  smoke-macos:
+    name: Smoke macOS
+    runs-on: macos-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests/smoke.sh
+        run: bash tests/smoke.sh
+
+  smoke-windows:
+    name: Smoke Windows
+    runs-on: windows-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Run tests/smoke.ps1
+        shell: pwsh
+        run: ./tests/smoke.ps1
