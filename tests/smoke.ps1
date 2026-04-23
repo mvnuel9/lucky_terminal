@@ -25,11 +25,9 @@
 Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
+# Racine du dépôt = parent du dossier `tests/`. On privilégie $PSScriptRoot.
 $scriptDir = $PSScriptRoot
-if ([string]::IsNullOrWhiteSpace($scriptDir)) {
-    $scriptDir = Split-Path -Parent -LiteralPath $MyInvocation.MyCommand.Path
-}
-$repoRoot = Split-Path -Parent -LiteralPath $scriptDir
+$repoRoot = Split-Path $scriptDir -Parent
 
 function Write-Pass {
     param([Parameter(Mandatory = $true)][string]$Label)

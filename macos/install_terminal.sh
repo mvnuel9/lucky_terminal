@@ -37,6 +37,7 @@ OHMYZSH_INSTALL_SHA256="${OHMYZSH_INSTALL_SHA256:-}"
 log_info "=== Installation Oh My Zsh (macOS) ==="
 
 if [[ -d "${HOME}/.oh-my-zsh" ]]; then
+  # shellcheck disable=SC2088  # message informatif : on affiche le chemin avec ~ pour l'utilisateur
   log_info "~/.oh-my-zsh existe déjà — on conserve."
 else
   log_info "Installation Oh My Zsh depuis : $OHMYZSH_INSTALL_URL"

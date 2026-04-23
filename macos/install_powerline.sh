@@ -31,6 +31,7 @@ done
 CONFIGS="${SCRIPT_DIR}/configs"
 FONTS_SRC="${SCRIPT_DIR}/fonts"
 
+# shellcheck disable=SC2016  # chaîne littérale affichée à l'utilisateur (la commande reste textuelle)
 require_cmd brew 'installez Homebrew : /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"'
 
 log_info "=== Installation Powerline (macOS) ==="

@@ -39,6 +39,7 @@ log_info "Installation de git-core, zsh, curl via apt..."
 lucky_run sudo apt install -y git-core zsh curl
 
 if [[ -d "${HOME}/.oh-my-zsh" ]]; then
+  # shellcheck disable=SC2088  # message informatif : on affiche le chemin avec ~ pour l'utilisateur
   log_info "~/.oh-my-zsh existe déjà — installation Oh My Zsh ignorée."
 else
   log_info "Installation d'Oh My Zsh depuis : $OHMYZSH_INSTALL_URL"

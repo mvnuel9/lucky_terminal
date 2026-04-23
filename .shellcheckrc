@@ -21,3 +21,15 @@ disable=SC1091
 # Volontairement tolérée : la plupart des `local foo=$(cmd)` sont inoffensifs et la
 # refactorisation massive apporterait peu de valeur.
 disable=SC2155
+
+# SC2317 = "Command appears to be unreachable."
+# On l'utilise volontairement dans `scripts/_common.sh` pour le pattern
+# `return 0 2>/dev/null || true` qui distingue "sourcé" de "exécuté".
+disable=SC2317
+
+# SC2034 = "Variable appears unused."
+# Désactivée globalement : `scripts/_common.sh` définit volontairement beaucoup
+# de constantes et flags (LUCKY_EXIT_*, LUCKY_AUTO_YES, LUCKY_VERBOSE,
+# LUCKY_DRY_RUN) qui ne sont lus que par les scripts qui le sourcent, pas par
+# le fichier lui-même. La détection par fichier isolé crée des faux positifs.
+disable=SC2034

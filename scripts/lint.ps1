@@ -28,11 +28,9 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 # Racine du dépôt = dossier parent de ce script.
+# On privilégie $PSScriptRoot (toujours défini pour un script lancé via `pwsh -File` ou dot-source).
 $scriptDir = $PSScriptRoot
-if ([string]::IsNullOrWhiteSpace($scriptDir)) {
-    $scriptDir = Split-Path -Parent -LiteralPath $MyInvocation.MyCommand.Path
-}
-$repoRoot = Split-Path -Parent -LiteralPath $scriptDir
+$repoRoot = Split-Path $scriptDir -Parent
 $settingsFile = Join-Path -Path $repoRoot -ChildPath 'PSScriptAnalyzerSettings.psd1'
 
 function Write-Info { param([string]$Message) Write-Host "[INFO] $Message" }
