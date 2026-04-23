@@ -4,6 +4,12 @@
 #
 # Usage : depuis la racine du dépôt —  ./macos/install_terminal.sh
 #
+# Variables d'environnement (avancé) :
+#   OHMYZSH_INSTALL_URL     URL du script installer Oh My Zsh
+#                           (défaut : https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)
+#   OHMYZSH_INSTALL_SHA256  SHA256 attendu du script (défaut : vide = pas de vérif).
+#                           Fortement recommandé en CI/production.
+#
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -25,20 +31,27 @@ for arg in ${LUCKY_REMAINING_ARGS[@]+"${LUCKY_REMAINING_ARGS[@]}"}; do
   esac
 done
 
+OHMYZSH_INSTALL_URL="${OHMYZSH_INSTALL_URL:-https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh}"
+OHMYZSH_INSTALL_SHA256="${OHMYZSH_INSTALL_SHA256:-}"
+
 log_info "=== Installation Oh My Zsh (macOS) ==="
 
 if [[ -d "${HOME}/.oh-my-zsh" ]]; then
   log_info "~/.oh-my-zsh existe déjà — on conserve."
 else
-  log_info "Installation (sans changer le shell ni ouvrir un nouveau zsh à la fin)..."
+  log_info "Installation Oh My Zsh depuis : $OHMYZSH_INSTALL_URL"
+  log_info "(sans changer le shell ni ouvrir un nouveau zsh à la fin)"
   export RUNZSH=no
   export CHSH=no
+  tmp_dir="$(mktemp -d -t lucky-ohmyzsh-XXXXXX)"
+  # shellcheck disable=SC2064
+  trap "rm -rf '$tmp_dir'" EXIT
+  installer="$tmp_dir/install.sh"
+  lucky_fetch_and_verify "$OHMYZSH_INSTALL_URL" "$installer" "$OHMYZSH_INSTALL_SHA256"
   if [[ "${LUCKY_DRY_RUN:-0}" -eq 1 ]]; then
-    log_info "[dry-run] sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\""
+    log_info "[dry-run] sh \"$installer\""
   else
-    # Note : l'épinglage de version et la vérification d'intégrité sont traités
-    # dans l'item "Sécuriser les téléchargements externes" de la roadmap.
-    sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+    sh "$installer"
   fi
 fi
 

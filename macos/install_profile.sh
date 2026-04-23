@@ -5,6 +5,10 @@
 #
 # Usage : depuis la racine du dépôt —  ./macos/install_profile.sh
 #
+# Variables d'environnement (avancé) :
+#   ZSH_SYNTAX_HIGHLIGHTING_REF   Ref git de zsh-syntax-highlighting (défaut : master).
+#   ZSH_AUTOSUGGESTIONS_REF       Ref git de zsh-autosuggestions (défaut : master).
+#
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -37,19 +41,23 @@ log_info "=== Installation du profil Mvnuel (macOS) ==="
 
 log_info "[1/3] Extensions Zsh (syntax highlighting, autosuggestions)..."
 ZSH_CUSTOM="${HOME}/.oh-my-zsh/custom/plugins"
+ZSH_SYNTAX_HIGHLIGHTING_REF="${ZSH_SYNTAX_HIGHLIGHTING_REF:-master}"
+ZSH_AUTOSUGGESTIONS_REF="${ZSH_AUTOSUGGESTIONS_REF:-master}"
 lucky_run mkdir -p "${ZSH_CUSTOM}"
 clone_omz_plugin() {
   local url="$1"
+  local ref="$2"
   local name
   name="$(basename "$url" .git)"
   if [[ -d "${ZSH_CUSTOM}/${name}" ]]; then
     log_info "    ${name} déjà présent."
   else
-    lucky_run git clone --depth=1 "$url" "${ZSH_CUSTOM}/${name}"
+    log_info "    clone ${name} @ ${ref}"
+    lucky_run git clone --depth=1 --branch "$ref" "$url" "${ZSH_CUSTOM}/${name}"
   fi
 }
-clone_omz_plugin "https://github.com/zsh-users/zsh-syntax-highlighting.git"
-clone_omz_plugin "https://github.com/zsh-users/zsh-autosuggestions.git"
+clone_omz_plugin "https://github.com/zsh-users/zsh-syntax-highlighting.git" "$ZSH_SYNTAX_HIGHLIGHTING_REF"
+clone_omz_plugin "https://github.com/zsh-users/zsh-autosuggestions.git" "$ZSH_AUTOSUGGESTIONS_REF"
 
 log_info "[2/3] Copie des configs macOS (macos/configs/ → ~ et ~/.oh-my-zsh/themes)..."
 lucky_run cp "${CONFIGS}/.zshrc" "${HOME}/.zshrc"

@@ -140,3 +140,114 @@ lucky_run() {
   fi
   "$@"
 }
+
+# --- Téléchargements sécurisés ------------------------------------------
+# Les helpers suivants imposent HTTPS + retries + option de vérif SHA256.
+# Objectifs :
+#   1. Éviter les 'curl | sh' sans filet : on télécharge dans un fichier
+#      temporaire, on peut vérifier une checksum, puis on exécute.
+#   2. Autoriser l'utilisateur avancé à épingler une source via variables
+#      d'environnement (cf. les différents scripts install_*.sh).
+#   3. Respecter --dry-run comme lucky_run.
+#
+# Variables influentes :
+#   LUCKY_ALLOW_HTTP=1  (défaut 0) : autorise les URLs http:// (déconseillé).
+#
+# Note compat : on privilégie curl (présent partout). wget en fallback.
+
+# lucky_require_https <url>
+# Renvoie 0 si l'URL est HTTPS ou si LUCKY_ALLOW_HTTP=1, sinon die.
+lucky_require_https() {
+  local url="$1"
+  case "$url" in
+    https://*) return 0 ;;
+    http://*)
+      if [[ "${LUCKY_ALLOW_HTTP:-0}" -eq 1 ]]; then
+        log_warn "URL non chiffrée acceptée (LUCKY_ALLOW_HTTP=1) : $url"
+        return 0
+      fi
+      die "URL non HTTPS refusée : $url (override via LUCKY_ALLOW_HTTP=1)" "$LUCKY_EXIT_GENERIC"
+      ;;
+    *) die "URL invalide : $url" "$LUCKY_EXIT_USAGE" ;;
+  esac
+}
+
+# lucky_sha256 <file>
+# Affiche le SHA256 du fichier (détecte l'outil disponible). Erreur si aucun.
+lucky_sha256() {
+  local file="$1"
+  [[ -f "$file" ]] || die "lucky_sha256 : fichier introuvable : $file" "$LUCKY_EXIT_MISSING_FILE"
+  if command -v sha256sum >/dev/null 2>&1; then
+    sha256sum "$file" | awk '{print $1}'
+  elif command -v shasum >/dev/null 2>&1; then
+    shasum -a 256 "$file" | awk '{print $1}'
+  elif command -v openssl >/dev/null 2>&1; then
+    openssl dgst -sha256 "$file" | awk '{print $NF}'
+  else
+    die "Aucun outil SHA256 disponible (sha256sum / shasum / openssl)." "$LUCKY_EXIT_MISSING_TOOL"
+  fi
+}
+
+# lucky_verify_sha256 <file> <expected_sha256>
+# Compare le SHA256 du fichier à la valeur attendue ; die si diff.
+lucky_verify_sha256() {
+  local file="$1"
+  local expected="$2"
+  [[ -n "$expected" ]] || die "lucky_verify_sha256 : SHA256 attendu vide." "$LUCKY_EXIT_USAGE"
+  local got
+  got="$(lucky_sha256 "$file")"
+  if [[ "$(_sh_tolower "$got")" != "$(_sh_tolower "$expected")" ]]; then
+    log_error "Checksum SHA256 invalide pour $file"
+    log_error "  attendu : $expected"
+    log_error "  obtenu  : $got"
+    die "Vérification d'intégrité échouée." "$LUCKY_EXIT_GENERIC"
+  fi
+  log_ok "SHA256 OK ($file)"
+}
+
+# lucky_download <url> <dest>
+# Télécharge une URL vers <dest>. Refuse HTTP par défaut. Respecte --dry-run.
+# Utilise curl en priorité, wget en fallback.
+lucky_download() {
+  local url="$1"
+  local dest="$2"
+  [[ -n "$url" && -n "$dest" ]] || die "lucky_download : arguments manquants (url, dest)." "$LUCKY_EXIT_USAGE"
+  lucky_require_https "$url"
+
+  if [[ "${LUCKY_DRY_RUN:-0}" -eq 1 ]]; then
+    log_info "[dry-run] download '$url' -> '$dest'"
+    return 0
+  fi
+
+  if command -v curl >/dev/null 2>&1; then
+    curl --proto '=https' --tlsv1.2 \
+      --fail --silent --show-error --location \
+      --retry 3 --retry-delay 2 \
+      --output "$dest" \
+      "$url"
+  elif command -v wget >/dev/null 2>&1; then
+    wget --https-only --tries=3 --waitretry=2 -q -O "$dest" "$url"
+  else
+    die "Aucun client HTTP disponible (curl / wget)." "$LUCKY_EXIT_MISSING_TOOL"
+  fi
+}
+
+# lucky_fetch_and_verify <url> <dest> [expected_sha256]
+# Télécharge puis vérifie le SHA256 si fourni (sinon simple log du SHA256 obtenu).
+# Pratique pour les scripts d'install distants (ex. Oh My Zsh installer).
+lucky_fetch_and_verify() {
+  local url="$1"
+  local dest="$2"
+  local expected="${3:-}"
+  lucky_download "$url" "$dest"
+  if [[ "${LUCKY_DRY_RUN:-0}" -eq 1 ]]; then
+    return 0
+  fi
+  if [[ -n "$expected" ]]; then
+    lucky_verify_sha256 "$dest" "$expected"
+  else
+    local got
+    got="$(lucky_sha256 "$dest")"
+    log_info "SHA256 obtenu : $got (aucune vérification demandée)"
+  fi
+}

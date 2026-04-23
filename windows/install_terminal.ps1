@@ -2,8 +2,15 @@
 param(
     [switch]$Yes,
     # Tente Install-Module PSReadLine meme si une version recente est deja la.
-    [switch]$ForcePSReadLineUpdate
+    [switch]$ForcePSReadLineUpdate,
+    # Version d'Oh My Posh a installer via winget. Vide = derniere.
+    # Ex. "19.33.0". Surchargeable via $env:OHMYPOSH_VERSION.
+    [string]$OhMyPoshVersion = ""
 )
+
+if (-not $OhMyPoshVersion) {
+    $OhMyPoshVersion = "$($env:OHMYPOSH_VERSION)"
+}
 
 # Détermination du répertoire du script (compatible PS 5.1+)
 # $PSScriptRoot fonctionne sur PS 6+, fallback sur $MyInvocation.MyCommand.Path pour PS 5.1
@@ -57,7 +64,16 @@ function Install-OhMyPoshExecutable {
     }
 
     Write-Host "    Installation du binaire Oh My Posh via winget..."
-    & winget.exe install JanDeDobbeleer.OhMyPosh --source winget --accept-package-agreements --accept-source-agreements
+    $wingetArgs = @(
+        "install", "JanDeDobbeleer.OhMyPosh",
+        "--source", "winget",
+        "--accept-package-agreements", "--accept-source-agreements"
+    )
+    if (-not [string]::IsNullOrWhiteSpace($OhMyPoshVersion)) {
+        Write-Host "    Version epinglee : $OhMyPoshVersion"
+        $wingetArgs += @("--version", $OhMyPoshVersion)
+    }
+    & winget.exe @wingetArgs
     Refresh-UserPath
 
     if (-not (Get-Command oh-my-posh -ErrorAction SilentlyContinue)) {

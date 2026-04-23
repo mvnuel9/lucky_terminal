@@ -4,6 +4,9 @@
 #
 # Usage : depuis la racine du dépôt —  ./macos/install_powerline.sh
 #
+# Variables d'environnement (avancé) :
+#   POWERLINE_STATUS_VERSION   Version pipx (défaut : vide = dernière).
+#
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -41,8 +44,12 @@ lucky_run pipx ensurepath || true
 export PATH="${HOME}/.local/bin:${PATH}"
 
 log_info "[3/4] Installation de powerline-status via pipx..."
+POWERLINE_STATUS_VERSION="${POWERLINE_STATUS_VERSION:-}"
 if pipx list 2>/dev/null | grep -q powerline-status; then
   log_info "    powerline-status déjà installé — ignoré."
+elif [[ -n "$POWERLINE_STATUS_VERSION" ]]; then
+  log_info "    version épinglée : $POWERLINE_STATUS_VERSION"
+  lucky_run pipx install "powerline-status==$POWERLINE_STATUS_VERSION"
 else
   lucky_run pipx install powerline-status
 fi

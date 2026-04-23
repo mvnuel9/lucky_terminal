@@ -5,6 +5,10 @@
 #
 # Usage : depuis la racine du dépôt —  ./linux/install_powerline.sh
 #
+# Variables d'environnement (avancé) :
+#   POWERLINE_STATUS_VERSION   Version pipx (défaut : vide = dernière).
+#                              Ex. 2.8.4 pour épingler : `pipx install powerline-status==2.8.4`.
+#
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -36,7 +40,13 @@ lucky_run pipx ensurepath
 export PATH="$HOME/.local/bin:$PATH"
 
 log_info "[3/4] Installation de powerline-status via pipx..."
-lucky_run pipx install powerline-status
+POWERLINE_STATUS_VERSION="${POWERLINE_STATUS_VERSION:-}"
+if [[ -n "$POWERLINE_STATUS_VERSION" ]]; then
+  log_info "    version épinglée : $POWERLINE_STATUS_VERSION"
+  lucky_run pipx install "powerline-status==$POWERLINE_STATUS_VERSION"
+else
+  lucky_run pipx install powerline-status
+fi
 
 log_info "[4/4] Configuration Vim + polices..."
 lucky_run cp "${SCRIPT_DIR}/configs/.vimrc" "$HOME/.vimrc"
