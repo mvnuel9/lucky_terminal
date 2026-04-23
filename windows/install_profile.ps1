@@ -12,9 +12,7 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 # Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 $configsDir = Join-Path -Path $scriptDir -ChildPath "configs"
 
@@ -42,7 +40,7 @@ $terminalTargets = @(
 )
 
 if (-not (Test-Path -LiteralPath $profileSource)) {
-    throw "Profil source introuvable: $profileSource"
+    Invoke-Die "Profil source introuvable: $profileSource" -ExitCode $Script:Lucky_Exit_MissingFile
 }
 
 Write-Host "==> Copie du theme Oh My Posh..."

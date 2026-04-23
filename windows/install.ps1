@@ -16,13 +16,11 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 # Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
-$fontsScript    = Join-Path $scriptDir "install_fonts.ps1"
+$fontsScript = Join-Path $scriptDir "install_fonts.ps1"
 $terminalScript = Join-Path $scriptDir "install_terminal.ps1"
-$profileScript  = Join-Path $scriptDir "install_profile.ps1"
+$profileScript = Join-Path $scriptDir "install_profile.ps1"
 
 Write-Host "==> [1/3] Polices Nerd Font..."
 & $fontsScript -Yes:$Yes -NerdFontDirectory $NerdFontDirectory

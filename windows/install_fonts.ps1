@@ -15,9 +15,7 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 # Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 function Test-RobotoMonoNerdFontInstalled {
     <#
@@ -67,7 +65,7 @@ function Test-RobotoMonoNerdFontInstalled {
         $hit = Get-ChildItem -LiteralPath $dir -File -ErrorAction SilentlyContinue |
             Where-Object {
                 $_.Extension -match '^\.(ttf|otf)$' -and
-                    $_.Name -match '(?i)RobotoMono' -and $_.Name -match '(?i)Nerd'
+                $_.Name -match '(?i)RobotoMono' -and $_.Name -match '(?i)Nerd'
             } |
             Select-Object -First 1
         if ($hit) {

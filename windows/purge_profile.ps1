@@ -4,34 +4,15 @@ param(
     [switch]$WithHistory
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
-function Confirm-Step {
-    param(
-        [Parameter(Mandatory = $true)][string]$Message
-    )
-
-    if ($Yes) {
-        Write-Host "OK (--Yes): $Message"
-        return $true
-    }
-
-    $answer = Read-Host "$Message [y/N]"
-    return $answer -match "^(y|yes|o|oui)$"
+# Détermination du répertoire du script (compatible PS 5.1+)
+$scriptDir = $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($scriptDir)) {
+    $scriptDir = Split-Path -Parent -LiteralPath $MyInvocation.MyCommand.Path
 }
+# Chargement des fonctions utilitaires communes
+. (Join-Path $scriptDir "_common.ps1")
 
-function Test-IsWindowsHost {
-    if ($PSVersionTable.PSVersion.Major -ge 6) {
-        return $IsWindows
-    }
-
-    return $env:OS -eq "Windows_NT"
-}
-
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 $profilePath = $null
 if ($PROFILE | Get-Member -Name CurrentUserCurrentHost -ErrorAction SilentlyContinue) {
@@ -62,9 +43,9 @@ foreach ($target in $targets) {
     Write-Host "  - $target"
 }
 
-if (-not (Confirm-Step -Message "Confirmer la suppression des elements ci-dessus ?")) {
+if (-not (Confirm-Step -Message "Confirmer la suppression des elements ci-dessus ?" -Yes:$Yes)) {
     Write-Host "Purge annulee."
-    exit 0
+    exit $Script:Lucky_Exit_Cancelled
 }
 
 foreach ($target in $targets) {

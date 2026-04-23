@@ -1,0 +1,35 @@
+# Configuration ShellCheck pour Lucky Terminal
+# Doc : https://www.shellcheck.net/wiki/Directive
+
+# On cible Bash (scripts utilisent #!/usr/bin/env bash).
+shell=bash
+
+# Active des checks optionnels utiles côté hygiène.
+enable=quote-safe-variables
+enable=avoid-nullary-conditions
+
+# `require-variable-braces` (SC2250) volontairement désactivé : règle purement
+# stylistique, `"$VAR"` non ambigu fonctionne parfaitement. On évite une refactorisation
+# massive `${VAR}` partout pour un gain nul côté robustesse.
+
+# Ignore les sources dynamiques (ex: ~/.zshrc, .aliases) — ShellCheck ne peut pas les résoudre
+# statiquement et leur contenu est celui de l'utilisateur, pas du dépôt.
+# SC1091 = "Not following: file was not specified as input (see shellcheck -x)"
+disable=SC1091
+
+# SC2155 = "Declare and assign separately to avoid masking return values."
+# Volontairement tolérée : la plupart des `local foo=$(cmd)` sont inoffensifs et la
+# refactorisation massive apporterait peu de valeur.
+disable=SC2155
+
+# SC2317 = "Command appears to be unreachable."
+# On l'utilise volontairement dans `scripts/_common.sh` pour le pattern
+# `return 0 2>/dev/null || true` qui distingue "sourcé" de "exécuté".
+disable=SC2317
+
+# SC2034 = "Variable appears unused."
+# Désactivée globalement : `scripts/_common.sh` définit volontairement beaucoup
+# de constantes et flags (LUCKY_EXIT_*, LUCKY_AUTO_YES, LUCKY_VERBOSE,
+# LUCKY_DRY_RUN) qui ne sont lus que par les scripts qui le sourcent, pas par
+# le fichier lui-même. La détection par fichier isolé crée des faux positifs.
+disable=SC2034
