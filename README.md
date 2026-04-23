@@ -73,6 +73,37 @@ Ne mélange pas les dossiers : les scripts `**linux/`** ne sont pas faits pour m
 
 ---
 
+## 🔒 Sécurité des sources & épinglage
+
+Par défaut, les scripts installent les dernières versions des dépendances distantes (Oh My Zsh, plug-ins zsh, `powerline-status`, Oh My Posh). En CI ou en environnement sensible, on peut figer ces versions et vérifier l’intégrité des scripts téléchargés **sans modifier le code** : toutes les sources passent par HTTPS obligatoire, et chaque script distant est téléchargé dans un fichier temporaire (plus de `curl | sh` aveugle).
+
+Variables d’environnement reconnues (toutes optionnelles, valeurs vides = comportement par défaut) :
+
+| Variable                        | Scripts concernés                                                      | Effet                                                                                 |
+| ------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `OHMYZSH_INSTALL_URL`           | `linux/install_terminal.sh`, `macos/install_terminal.sh`               | Surcharge l’URL du script installer Oh My Zsh (défaut : `ohmyzsh/ohmyzsh/master`).    |
+| `OHMYZSH_INSTALL_SHA256`        | idem                                                                   | Si défini, le script vérifie le SHA256 du fichier téléchargé avant exécution.         |
+| `ZSH_SYNTAX_HIGHLIGHTING_REF`   | `linux/install_profile.sh`, `macos/install_profile.sh`                 | Ref git (branche/tag) de `zsh-syntax-highlighting` (défaut : `master`).               |
+| `ZSH_AUTOSUGGESTIONS_REF`       | idem                                                                   | Ref git (branche/tag) de `zsh-autosuggestions` (défaut : `master`).                   |
+| `POWERLINE_STATUS_VERSION`      | `linux/install_powerline.sh`, `macos/install_powerline.sh`             | Si défini, `pipx install powerline-status==$VERSION`.                                 |
+| `LUCKY_ALLOW_HTTP`              | tout script Bash utilisant les helpers                                 | `=1` pour autoriser les URLs `http://` (fortement déconseillé).                       |
+
+Côté Windows, l’installer PowerShell accepte `-OhMyPoshVersion` (ou `$env:OHMYPOSH_VERSION`) pour transmettre `--version` à `winget install JanDeDobbeleer.OhMyPosh`.
+
+Exemple d’install reproductible (Linux) :
+
+```bash
+OHMYZSH_INSTALL_SHA256="<sha256 du install.sh vérifié à la main>" \
+ZSH_SYNTAX_HIGHLIGHTING_REF="0.8.0" \
+ZSH_AUTOSUGGESTIONS_REF="v0.7.1" \
+POWERLINE_STATUS_VERSION="2.8.4" \
+./linux/install.sh --yes
+```
+
+Les helpers sous-jacents (`lucky_download`, `lucky_verify_sha256`, etc.) vivent dans `scripts/_common.sh` et sont disponibles pour tout nouveau script Bash du dépôt.
+
+---
+
 ## 📚 Pour aller plus loin
 
 
