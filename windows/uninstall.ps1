@@ -3,34 +3,15 @@ param(
     [switch]$Yes
 )
 
-Set-StrictMode -Version Latest
-$ErrorActionPreference = "Stop"
-
-function Confirm-Step {
-    param(
-        [Parameter(Mandatory = $true)][string]$Message
-    )
-
-    if ($Yes) {
-        Write-Host "OK (--Yes): $Message"
-        return $true
-    }
-
-    $answer = Read-Host "$Message [y/N]"
-    return $answer -match "^(y|yes|o|oui)$"
+# Détermination du répertoire du script (compatible PS 5.1+)
+$scriptDir = $PSScriptRoot
+if ([string]::IsNullOrWhiteSpace($scriptDir)) {
+    $scriptDir = Split-Path -Parent -LiteralPath $MyInvocation.MyCommand.Path
 }
+# Chargement des fonctions utilitaires communes
+. (Join-Path $scriptDir "_common.ps1")
 
-function Test-IsWindowsHost {
-    if ($PSVersionTable.PSVersion.Major -ge 6) {
-        return $IsWindows
-    }
-
-    return $env:OS -eq "Windows_NT"
-}
-
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 $profileTarget = $null
 if ($PROFILE | Get-Member -Name CurrentUserCurrentHost -ErrorAction SilentlyContinue) {
@@ -51,7 +32,7 @@ $terminalTargets = @(
 Write-Host "==> Desinstallation Lucky Terminal Windows"
 
 if (Test-Path -LiteralPath $profileTarget) {
-    if (Confirm-Step -Message "Sauvegarder puis supprimer le profil PowerShell actuel ($profileTarget) ?") {
+    if (Confirm-Step -Message "Sauvegarder puis supprimer le profil PowerShell actuel ($profileTarget) ?" -Yes:$Yes) {
         $backup = "$profileTarget.bak.uninstall.$(Get-Date -Format 'yyyyMMdd-HHmmss')"
         Copy-Item -LiteralPath $profileTarget -Destination $backup -Force
         Remove-Item -LiteralPath $profileTarget -Force
@@ -60,13 +41,13 @@ if (Test-Path -LiteralPath $profileTarget) {
 }
 
 if (Test-Path -LiteralPath $themeTarget) {
-    if (Confirm-Step -Message "Supprimer le theme Mvnuel Oh My Posh ($themeTarget) ?") {
+    if (Confirm-Step -Message "Supprimer le theme Mvnuel Oh My Posh ($themeTarget) ?" -Yes:$Yes) {
         Remove-Item -LiteralPath $themeTarget -Force
         Write-Host "    Theme supprime."
     }
 }
 
-if (Confirm-Step -Message 'Desinstaller les modules PowerShell (Terminal-Icons, z) et l''ancien module oh-my-posh s''il reste ?') {
+if (Confirm-Step -Message 'Desinstaller les modules PowerShell (Terminal-Icons, z) et l''ancien module oh-my-posh s''il reste ?' -Yes:$Yes) {
     $modules = @("oh-my-posh", "Terminal-Icons", "z")
     foreach ($moduleName in $modules) {
         if (Get-Module -ListAvailable -Name $moduleName) {
@@ -76,7 +57,7 @@ if (Confirm-Step -Message 'Desinstaller les modules PowerShell (Terminal-Icons, 
     }
 }
 
-if (Confirm-Step -Message "Desinstaller le binaire Oh My Posh installe via winget (JanDeDobbeleer.OhMyPosh) ?") {
+if (Confirm-Step -Message "Desinstaller le binaire Oh My Posh installe via winget (JanDeDobbeleer.OhMyPosh) ?" -Yes:$Yes) {
     $winget = Get-Command winget -ErrorAction SilentlyContinue
     if ($winget) {
         & winget.exe uninstall JanDeDobbeleer.OhMyPosh --source winget --accept-source-agreements 2>$null
@@ -86,7 +67,7 @@ if (Confirm-Step -Message "Desinstaller le binaire Oh My Posh installe via winge
     }
 }
 
-if (Confirm-Step -Message "Restaurer les settings Windows Terminal depuis un backup recent (si present) ?") {
+if (Confirm-Step -Message "Restaurer les settings Windows Terminal depuis un backup recent (si present) ?" -Yes:$Yes) {
     foreach ($target in $terminalTargets) {
         $parent = Split-Path -Parent $target
         if (-not (Test-Path -LiteralPath $parent)) {

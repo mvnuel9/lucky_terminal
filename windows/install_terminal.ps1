@@ -14,9 +14,7 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 # Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 function Initialize-ModuleInstall {
     # Needed for many PS 5.1 environments that default to TLS 1.0/1.1.

@@ -15,9 +15,7 @@ if ([string]::IsNullOrWhiteSpace($scriptDir)) {
 # Chargement des fonctions utilitaires communes
 . (Join-Path $scriptDir "_common.ps1")
 
-if (-not (Test-IsWindowsHost)) {
-    throw "Ce script est prevu pour Windows."
-}
+Assert-Windows
 
 function Test-RobotoMonoNerdFontInstalled {
     <#
