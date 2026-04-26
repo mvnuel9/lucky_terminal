@@ -73,6 +73,66 @@ Ne mélange pas les dossiers : les scripts `**linux/`** ne sont pas faits pour m
 
 ---
 
+## 🛟 Dépannage rapide
+
+Symptômes les plus courants et leur correction express. Si rien ne marche, lance le script avec `--verbose` (Bash) ou ajoute `-Verbose` (PowerShell) et copie l'erreur en issue.
+
+### Linux & macOS (Bash)
+
+| Symptôme                                                                                | Cause probable                                                                                            | Correction                                                                                                                        |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| `Permission denied` au lancement                                                        | Le bit exécutable n'est pas posé.                                                                         | `chmod +x linux/install.sh` (idem `macos/`, sous-scripts `install_*`).                                                            |
+| `Ce script est prévu pour macOS (Darwin)` (exit `20`)                                   | Tu as lancé un script `macos/` sur Linux (ou inversement).                                                | Utilise le dossier qui correspond à ton OS. Vérifie : `uname -s` doit être `Darwin` pour macOS.                                   |
+| `Dépôt incomplet : <chemin>/.zshrc introuvable` (exit `21`)                             | Le dépôt a été cloné incomplètement, ou tu lances le script depuis le mauvais dossier.                    | Lance les scripts **depuis la racine** du dépôt cloné : `./linux/install.sh`, pas `cd linux && ./install.sh`.                     |
+| `Oh My Zsh manquant. Lancez d'abord : ./<os>/install_terminal.sh` (exit `21`)           | Tu lances `install_profile.sh` en mode étape sans avoir fait `install_terminal.sh` avant.                 | Respecte l'ordre : `install_powerline.sh` → `install_terminal.sh` → `install_profile.sh`. Ou utilise `install.sh` (orchestrateur).|
+| `Commande requise introuvable : 'brew'` (exit `2`)                                      | Homebrew n'est pas installé sur macOS.                                                                    | Installer Homebrew : `/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"`.            |
+| `URL non HTTPS refusée : http://...` (exit `1`)                                         | Une variable d'environnement (`OHMYZSH_INSTALL_URL`, etc.) pointe sur du HTTP non sécurisé.               | Utilise une URL `https://`. Si vraiment nécessaire (réseau d'entreprise) : `LUCKY_ALLOW_HTTP=1 ./linux/install.sh` (déconseillé). |
+| `Vérification d'intégrité échouée` (exit `1`)                                           | Le SHA256 calculé ne correspond pas à `OHMYZSH_INSTALL_SHA256`.                                           | Recalcule le SHA256 sur la version courante du fichier amont, ou désactive le pinning (vide la variable).                         |
+| Le prompt s'affiche, mais les **séparateurs** Powerline sont des points d'interrogation | La police Powerline / Nerd Font n'est pas active dans ton émulateur de terminal.                          | GNOME Terminal → Préférences → profil → Police : `RobotoMono Nerd Font` ou `Roboto Mono for Powerline`. iTerm2 → Profils → Texte. |
+| `fc-cache introuvable` (warning Linux)                                                  | Le paquet `fontconfig` n'est pas installé.                                                                | `sudo apt-get install fontconfig` (Debian/Ubuntu). Sur macOS, ignore : Cocoa gère le cache des polices.                           |
+| Le profil GNOME Terminal « Mvnuel » n'apparaît pas                                      | `dconf` n'a pas pu écrire (session non-GNOME, gestionnaire alternatif).                                   | Importe le profil à la main : Préférences → ⋮ → Importer → `linux/configs/terminal_profile.dconf`.                                |
+| Le profil **Terminal.app** ne s'importe pas (macOS)                                     | `python3` absent ou Terminal.app fermé.                                                                   | Double-clic sur `macos/mvnuel.terminal`, puis Préférences → Profils → bouton « Par défaut ».                                      |
+
+### Windows (PowerShell)
+
+| Symptôme                                                                                  | Cause probable                                                                          | Correction                                                                                                                                                |
+| ----------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `... cannot be loaded because running scripts is disabled`                                | Politique d'exécution restrictive.                                                      | Utilise `-ExecutionPolicy Bypass` à l'invocation : `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1`.                           |
+| `winget introuvable` (warning)                                                            | Windows < 10 1809 ou App Installer désinstallée.                                        | Installer **App Installer** depuis le Microsoft Store, ou télécharger Oh My Posh manuellement : <https://ohmyposh.dev/docs/installation/windows>.         |
+| `oh-my-posh n'est pas encore dans le PATH` après install                                  | Le PATH n'a pas été rafraîchi dans la session courante.                                 | Ferme et rouvre **complètement** PowerShell / Windows Terminal. Si ça persiste, vérifie `Get-Command oh-my-posh`.                                         |
+| `PSReadLine n'a peut-être pas été mis à jour (fichiers verrouillés)`                      | PSReadLine est chargé par la session courante, donc impossible à remplacer.             | Ferme **toutes** les fenêtres PowerShell / Windows Terminal, puis relance avec `-ForcePSReadLineUpdate`.                                                  |
+| `Profil source introuvable: ...\Microsoft.PowerShell_profile.ps1` (exit `21`)             | Tu lances depuis l'extérieur du dépôt, ou le clone est partiel.                         | Vérifie que `windows\configs\Microsoft.PowerShell_profile.ps1` existe. Lance depuis la racine du dépôt cloné.                                             |
+| Les **glyphes** du prompt apparaissent comme des carrés ☐ ou des `?`                      | Windows Terminal n'utilise pas de Nerd Font.                                            | `settings.json` → profil PowerShell → `"font": { "face": "RobotoMono Nerd Font" }`. Réinstaller la police via `install_fonts.ps1` si besoin.              |
+| `Ce script est prevu pour Windows` (exit `20`)                                            | Tu as lancé un `.ps1` du dossier `windows/` sur PowerShell Core macOS/Linux.            | Les scripts `windows/` sont **Windows uniquement**. Sur macOS/Linux, utilise les scripts Bash de leur dossier respectif.                                  |
+
+### Désinstallation / repartir de zéro
+
+| Cas                                                       | Commande à exécuter                                                                                                       |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| Annuler l'install (Linux/macOS), garder Zsh + Oh My Zsh   | `./linux/uninstall.sh` (idem `macos/`).                                                                                   |
+| Tout virer côté Linux/macOS (Oh My Zsh + plug-ins inclus) | `./linux/purge_zsh.sh --yes` (idem `macos/`).                                                                             |
+| Annuler l'install Windows, garder les modules tiers       | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\uninstall.ps1`.                                            |
+| Tout virer côté Windows (profil + thème + historique)     | `powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\purge_profile.ps1 -Yes -WithHistory`.                      |
+| Restaurer un fichier écrasé                               | Les anciennes versions sont sauvegardées avec le suffixe `.bak.mvnuel-<YYYYMMDD-HHMMSS>` à côté du fichier original.      |
+
+> **Astuce** : avant de relancer une install, prévisualise ce qu'elle va faire avec `--dry-run --yes` (scripts Bash supportés : `linux/uninstall.sh`, `linux/purge_zsh.sh`, et leurs équivalents macOS).
+
+### Codes de sortie
+
+Tous les scripts utilisent les mêmes codes pour faciliter le debug en CI / supervision :
+
+| Code | Constante (Bash / PowerShell)                                       | Sens                                              |
+| ---- | ------------------------------------------------------------------- | ------------------------------------------------- |
+| `0`  | `LUCKY_EXIT_OK` / `$Script:Lucky_Exit_OK`                           | Succès.                                           |
+| `1`  | `LUCKY_EXIT_GENERIC` / `$Script:Lucky_Exit_Generic`                 | Erreur générique non classée.                     |
+| `2`  | `LUCKY_EXIT_MISSING_TOOL` / `$Script:Lucky_Exit_MissingTool`        | Une commande/dépendance attendue est absente.     |
+| `3`  | `LUCKY_EXIT_USAGE` / `$Script:Lucky_Exit_Usage`                     | Mauvais usage CLI (option inconnue, etc.).        |
+| `10` | `LUCKY_EXIT_CANCELLED` / `$Script:Lucky_Exit_Cancelled`             | Refus utilisateur (réponse `n` à un `--confirm`). |
+| `20` | `LUCKY_EXIT_UNSUPPORTED_OS` / `$Script:Lucky_Exit_UnsupportedOS`    | Plateforme inattendue.                            |
+| `21` | `LUCKY_EXIT_MISSING_FILE` / `$Script:Lucky_Exit_MissingFile`        | Fichier requis du dépôt absent.                   |
+
+---
+
 ## 🔒 Sécurité des sources & épinglage
 
 Par défaut, les scripts installent les dernières versions des dépendances distantes (Oh My Zsh, plug-ins zsh, `powerline-status`, Oh My Posh). En CI ou en environnement sensible, on peut figer ces versions et vérifier l’intégrité des scripts téléchargés **sans modifier le code** : toutes les sources passent par HTTPS obligatoire, et chaque script distant est téléchargé dans un fichier temporaire (plus de `curl | sh` aveugle).
