@@ -214,6 +214,57 @@ Move-Item "$($PROFILE.CurrentUserCurrentHost).bak.mvnuel.20260101-103045" $PROFI
 
 ---
 
+## 🧭 Matrice de compatibilité
+
+### OS
+
+| Plateforme              | Testé en CI (`runs-on`) | Versions supportées (best-effort) | Versions non supportées                       | Notes                                                                      |
+| ----------------------- | ----------------------- | --------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------- |
+| **Ubuntu / dérivés**    | `ubuntu-latest` (24.04) | 22.04 LTS · 24.04 LTS · Debian 12 | distros sans `apt-get` (Fedora, Arch, openSUSE...) | Cible explicite : Ubuntu + GNOME (3.36+) avec `dconf-cli`. Multi-distro prévu en `v1.4.0`. |
+| **macOS**               | `macos-latest` (14/15)  | macOS 12 Monterey → 15 Sequoia    | macOS ≤ 11 (Homebrew abandonne progressivement) | Apple Silicon (M1/M2/M3) **et** Intel x86_64. Zsh est shell par défaut depuis Catalina. |
+| **Windows**             | `windows-latest` (Server 2022) | Windows 10 21H2+ · Windows 11    | Windows ≤ 10 1809 (pas de winget)             | Tester aussi sur **Windows Terminal** récent pour les glyphes Nerd Font.   |
+
+### Shells & langages
+
+| Composant                        | Version minimale | Version recommandée  | Comment vérifier                          |
+| -------------------------------- | ---------------- | -------------------- | ----------------------------------------- |
+| **Bash** (Linux/macOS)           | 4.0              | 5.1+                 | `bash --version` (sur macOS, Bash 3.2 livré par défaut **ne suffit pas** ; les scripts s'exécutent via `#!/usr/bin/env bash`, donc Homebrew Bash ou Apple Bash 5+ via update suffit). |
+| **Zsh** (Linux/macOS, runtime)   | 5.0              | 5.8+                 | `zsh --version`                           |
+| **PowerShell** (Windows)         | 5.1 (Desktop)    | 7.4+ (Core)          | `$PSVersionTable.PSVersion`               |
+| **Python** (macOS, plistlib)     | 3.6              | 3.10+                | `python3 --version` (optionnel — macOS uniquement, pour l'import auto Terminal.app). |
+| **Python** (Linux, `powerline-status` via pipx) | 3.8 | 3.10+              | `python3 --version`                       |
+
+### Outils utilisateur (à fournir / installés par les scripts)
+
+| OS      | Outils **prérequis**            | Installés par les scripts                                                              |
+| ------- | ------------------------------- | -------------------------------------------------------------------------------------- |
+| Linux   | `apt-get`, `git`, `curl`, `vim` | `zsh`, `git-core`, Oh My Zsh, plug-ins zsh, `powerline-status` (pipx), `dconf-cli`, polices. |
+| macOS   | **Homebrew**, `git`             | `zsh`, `pipx`, `python`, `coreutils`, Oh My Zsh, plug-ins zsh, `powerline-status`, polices. |
+| Windows | **winget** (App Installer), PowerShell 5.1+ | Oh My Posh (winget), `Terminal-Icons`, `z`, `PSReadLine` (PowerShell Gallery), polices Nerd Font. |
+
+### Outils de développement (CI / contributeurs)
+
+| Outil                  | Version testée (CI) | Rôle                                                |
+| ---------------------- | ------------------- | --------------------------------------------------- |
+| **shellcheck**         | apt (`ubuntu-latest`, ≥ 0.9) | Lint des `.sh` (`scripts/lint.sh`).          |
+| **shfmt**              | **v3.8.0** épinglée | Formatage des `.sh` (`shfmt -i 2 -bn -ci`).         |
+| **PSScriptAnalyzer**   | dernière (PowerShell Gallery, `Install-Module -Scope CurrentUser`) | Lint des `.ps1` / `.psm1` / `.psd1`.                |
+| **PowerShell Core**    | `pwsh` 7+ fourni par les runners GitHub | Exécution lint + smoke Windows.        |
+| **GitHub Actions**     | `actions/checkout@v4`            | Workflow `.github/workflows/ci.yml` (5 jobs).       |
+
+> Voir `tests/smoke.sh` et `tests/smoke.ps1` pour la liste précise des assertions par OS, et `.shellcheckrc` / `PSScriptAnalyzerSettings.psd1` pour les règles activées.
+
+### Hors périmètre (assumé)
+
+Ce que **Lucky Terminal v1.0.x** ne prend volontairement **pas** en charge — voir `TODO.md` pour les versions cibles d'évolution :
+
+- **Distros Linux non-`apt`** (Fedora, Arch, openSUSE, Alpine) → reporté à `v1.4.0`.
+- **Shells alternatifs** (Bash login, Fish, Nushell) → reporté à `v2.0.0` (moteur Oh My Posh unifié).
+- **Terminaux graphiques** autres que GNOME Terminal / Terminal.app / iTerm2 / Windows Terminal (Konsole, Alacritty, Kitty, WezTerm…) → reporté à `v1.4.0`.
+- **WSL / WSL2** : non testé. Les scripts `linux/` peuvent fonctionner si `apt` + `dconf` sont présents, mais le profil GNOME Terminal n'a pas d'effet visible.
+
+---
+
 ## 🔒 Sécurité des sources & épinglage
 
 Par défaut, les scripts installent les dernières versions des dépendances distantes (Oh My Zsh, plug-ins zsh, `powerline-status`, Oh My Posh). En CI ou en environnement sensible, on peut figer ces versions et vérifier l’intégrité des scripts téléchargés **sans modifier le code** : toutes les sources passent par HTTPS obligatoire, et chaque script distant est téléchargé dans un fichier temporaire (plus de `curl | sh` aveugle).
