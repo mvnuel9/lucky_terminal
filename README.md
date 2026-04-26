@@ -133,6 +133,87 @@ Tous les scripts utilisent les mêmes codes pour faciliter le debug en CI / supe
 
 ---
 
+## 🏠 Empreinte sur ton `$HOME`
+
+Liste exhaustive de ce que **chaque script** dépose, écrase ou modifie dans ton répertoire utilisateur. Tout fichier déjà présent est **sauvegardé** sous la forme `<chemin>.bak.mvnuel-<YYYYMMDD-HHMMSS>` (Bash) ou `<chemin>.bak.mvnuel.<yyyyMMdd-HHmmss>` (PowerShell) avant écrasement.
+
+### Linux (`linux/install.sh`)
+
+| Cible                                                                       | Action                  | Posée par               | Source / contenu                                              |
+| --------------------------------------------------------------------------- | ----------------------- | ----------------------- | ------------------------------------------------------------- |
+| `~/.vimrc`                                                                  | copie (écrase)          | `install_powerline.sh`  | `linux/configs/.vimrc` (charge `powerline-status`).           |
+| `~/.fonts/`                                                                 | `mkdir -p`              | `install_powerline.sh`  | dossier de polices utilisateur.                               |
+| `~/.fonts/RobotoMono/`                                                      | copie récursive         | `install_powerline.sh`  | `linux/fonts/RobotoMono` (Roboto Mono for Powerline TTF).     |
+| `~/.oh-my-zsh/`                                                             | clone + install         | `install_terminal.sh`   | script officiel Oh My Zsh (URL surchargeable, voir Sécurité). |
+| `~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/`                      | `git clone --depth=1`   | `install_profile.sh`    | <https://github.com/zsh-users/zsh-syntax-highlighting>        |
+| `~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/`                          | `git clone --depth=1`   | `install_profile.sh`    | <https://github.com/zsh-users/zsh-autosuggestions>            |
+| `~/.oh-my-zsh/themes/mvnuel-agnoster.zsh-theme`                             | copie                   | `install_profile.sh`    | `linux/configs/mvnuel-agnoster.zsh-theme`.                    |
+| `~/.zshrc`                                                                  | copie (écrase)          | `install_profile.sh`    | `linux/configs/.zshrc`.                                       |
+| `~/.dircolors`                                                              | copie (écrase)          | `install_profile.sh`    | `linux/configs/dircolors`.                                    |
+| Profil GNOME Terminal `fb358fc9-…-1d25c649e633`                             | `dconf load` + `write`  | `install_profile.sh`    | `linux/configs/terminal_profile.dconf` (devient profil défaut).|
+| Shell de connexion utilisateur                                              | `chsh -s $(which zsh)`  | `install_profile.sh`    | bascule de Bash → Zsh (effet à la prochaine session).         |
+
+### macOS (`macos/install.sh`)
+
+| Cible                                                                       | Action                  | Posée par               | Source / contenu                                              |
+| --------------------------------------------------------------------------- | ----------------------- | ----------------------- | ------------------------------------------------------------- |
+| `~/.vimrc`                                                                  | copie (écrase)          | `install_powerline.sh`  | `macos/configs/.vimrc`.                                       |
+| `~/Library/Fonts/RobotoMono/`                                               | copie récursive         | `install_powerline.sh`  | `macos/fonts/RobotoMono`.                                     |
+| `~/.aliases`, `~/.functions`                                                | `touch` (placeholders)  | `install_terminal.sh`   | fichiers vides destinés à tes ajouts perso.                   |
+| `~/.oh-my-zsh/`                                                             | clone + install         | `install_terminal.sh`   | script officiel Oh My Zsh.                                    |
+| `~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting/`                      | `git clone --depth=1`   | `install_profile.sh`    | mêmes sources qu'en Linux.                                    |
+| `~/.oh-my-zsh/custom/plugins/zsh-autosuggestions/`                          | `git clone --depth=1`   | `install_profile.sh`    | idem.                                                         |
+| `~/.oh-my-zsh/themes/mvnuel-agnoster.zsh-theme`                             | copie                   | `install_profile.sh`    | `macos/configs/mvnuel-agnoster.zsh-theme`.                    |
+| `~/.zshrc`                                                                  | copie (écrase)          | `install_profile.sh`    | `macos/configs/.zshrc`.                                       |
+| `~/.dircolors`, `~/.dircolors.terminal`                                     | copie                   | `install_profile.sh`    | `macos/configs/dircolors{,.terminal}`.                        |
+| `~/Library/Preferences/com.apple.Terminal.plist`                            | merge via `plistlib`    | `install_profile.sh`    | profil « Mvnuel » défini comme défaut + au démarrage.         |
+
+> macOS ne déclenche **pas** de `chsh` : Zsh est déjà le shell de login par défaut depuis Catalina.
+
+### Windows (`windows\install.ps1`)
+
+| Cible                                                                                            | Action                | Posée par              | Source / contenu                                          |
+| ------------------------------------------------------------------------------------------------ | --------------------- | ---------------------- | --------------------------------------------------------- |
+| `$env:LOCALAPPDATA\Microsoft\Windows\Fonts\RobotoMono*.ttf` (et `.otf`)                          | copie + registre user | `install_fonts.ps1`    | `windows\fonts\RobotoMono` (ou `-NerdFontDirectory`).     |
+| `$HOME\.config\mvnuel\mvnuel.omp.json`                                                           | copie (écrase)        | `install_profile.ps1`  | `windows\configs\mvnuel.omp.json` (thème Oh My Posh).     |
+| `$PROFILE.CurrentUserCurrentHost` (`Microsoft.PowerShell_profile.ps1`, dans `Documents\PowerShell\` ou `Documents\WindowsPowerShell\` selon l'hôte) | copie (écrase, **avec backup**) | `install_profile.ps1`  | `windows\configs\Microsoft.PowerShell_profile.ps1`.       |
+| `<dossier $PROFILE>\aliases.ps1`, `functions.ps1`                                                | `New-Item` si absent  | `install_profile.ps1`  | placeholders vides pour tes ajouts perso.                 |
+| `$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json`    | copie (avec backup, après `Confirm-Step`) | `install_profile.ps1`  | `windows\configs\windows-terminal-settings.json`.         |
+| `…\Microsoft.WindowsTerminalPreview_8wekyb3d8bbwe\LocalState\settings.json`                      | idem (si présent)     | `install_profile.ps1`  | idem.                                                     |
+
+> `purge_profile.ps1 -WithHistory` est le **seul** script qui touche `$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt`. L'install standard ne le lit ni ne le modifie.
+
+### Ce qui sort de `$HOME` (modifications système)
+
+Ces actions affectent la machine **au-delà** du répertoire utilisateur. Elles nécessitent généralement les droits administrateur.
+
+| OS      | Modification                                                              | Déclenchée par            | Effet                                                  |
+| ------- | ------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------ |
+| Linux   | `sudo apt install -y git-core zsh curl`                                   | `install_terminal.sh`     | Paquets système requis (Zsh, git, curl).               |
+| Linux   | `sudo apt install -y python3-pip vim fontconfig`                          | `install_powerline.sh`    | Outils pour Vim + cache des polices.                   |
+| Linux   | `pipx install powerline-status[==<version>]`                              | `install_powerline.sh`    | Module Python utilisateur (pas système).               |
+| macOS   | `brew install zsh git pipx`                                               | `install_powerline.sh`    | Dépendances Homebrew (formules).                       |
+| macOS   | `pipx install powerline-status[==<version>]`                              | `install_powerline.sh`    | Module Python utilisateur.                             |
+| Windows | `winget install JanDeDobbeleer.OhMyPosh [--version <X>]`                  | `install_terminal.ps1`    | Installation Oh My Posh à l'échelle utilisateur.       |
+| Windows | `Install-Module Terminal-Icons z PSReadLine -Scope CurrentUser`           | `install_terminal.ps1`    | Modules PowerShell utilisateur.                        |
+| Windows | `Uninstall-Module oh-my-posh` (l'ancien module déprécié)                  | `install_terminal.ps1`    | Nettoyage de l'ancien module avant la version binaire. |
+
+### Restauration d'un fichier remplacé
+
+Toutes les sauvegardes sont posées **à côté** du fichier original, ce qui rend la restauration triviale :
+
+```bash
+ls -lh ~/.zshrc.bak.mvnuel-*
+mv ~/.zshrc.bak.mvnuel-20260101-103045 ~/.zshrc
+```
+
+```powershell
+Get-ChildItem $PROFILE.CurrentUserCurrentHost.Replace('.ps1','*')
+Move-Item "$($PROFILE.CurrentUserCurrentHost).bak.mvnuel.20260101-103045" $PROFILE.CurrentUserCurrentHost -Force
+```
+
+---
+
 ## 🔒 Sécurité des sources & épinglage
 
 Par défaut, les scripts installent les dernières versions des dépendances distantes (Oh My Zsh, plug-ins zsh, `powerline-status`, Oh My Posh). En CI ou en environnement sensible, on peut figer ces versions et vérifier l’intégrité des scripts téléchargés **sans modifier le code** : toutes les sources passent par HTTPS obligatoire, et chaque script distant est téléchargé dans un fichier temporaire (plus de `curl | sh` aveugle).
