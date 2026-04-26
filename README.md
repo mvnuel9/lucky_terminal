@@ -265,6 +265,145 @@ Ce que **Lucky Terminal v1.0.x** ne prend volontairement **pas** en charge — v
 
 ---
 
+## 🧪 Exemples d'utilisation avancée
+
+Au-delà du `./<os>/install.sh` qui suffit dans 95 % des cas, voici les scénarios où il vaut la peine de connaître les options.
+
+### 1. Mode étape par étape (debug ciblé, install partielle)
+
+Utile quand un step échoue ou qu'on veut juste les polices, juste Oh My Zsh, etc. L'orchestrateur `install.sh` enchaîne ces trois étapes dans cet ordre — les invoquer à la main donne le **même résultat** :
+
+```bash
+./linux/install_powerline.sh    # polices + Vim + powerline-status (pipx)
+./linux/install_terminal.sh     # apt install zsh + Oh My Zsh
+./linux/install_profile.sh      # plugins Zsh + ~/.zshrc + thème + dconf + chsh
+```
+
+```bash
+./macos/install_powerline.sh    # brew + pipx + polices + ~/.vimrc
+./macos/install_terminal.sh     # Oh My Zsh + ~/.aliases / ~/.functions
+./macos/install_profile.sh      # plugins Zsh + ~/.zshrc + thème + Terminal.app
+```
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_fonts.ps1 -Yes
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_terminal.ps1 -Yes
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_profile.ps1 -Yes
+```
+
+> **Ordre obligatoire** côté Linux/macOS : `install_profile.sh` exige que `~/.oh-my-zsh` existe. Sinon il sort en `LUCKY_EXIT_MISSING_FILE` (21) avec le message « Lancez d'abord : ./<os>/install_terminal.sh ».
+
+### 2. Prévisualiser sans rien toucher (`--dry-run`)
+
+Tous les scripts Bash supportent `--dry-run` (via les helpers `scripts/_common.sh`). Aucun fichier n'est créé / déplacé / supprimé : seul le **plan d'exécution** est affiché.
+
+```bash
+./linux/uninstall.sh --dry-run --yes
+./linux/purge_zsh.sh --dry-run --yes --with-history
+```
+
+C'est exactement ce que fait la CI (jobs `smoke-linux` / `smoke-macos`) : `bash -n` puis `--help` puis `--dry-run --yes` sur les scripts destructeurs, pour s'assurer qu'ils ne crashent pas.
+
+### 3. Mode non interactif (CI, provisioning, Ansible)
+
+Pour scripter une install dans un pipeline ou une image Docker / VM :
+
+```bash
+./linux/install.sh --yes
+./macos/install.sh --yes
+```
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes
+```
+
+Combine avec les variables d'épinglage si l'environnement doit être **reproductible** :
+
+```bash
+OHMYZSH_INSTALL_SHA256="$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh | sha256sum | cut -d' ' -f1)" \
+ZSH_SYNTAX_HIGHLIGHTING_REF="0.8.0" \
+ZSH_AUTOSUGGESTIONS_REF="v0.7.1" \
+POWERLINE_STATUS_VERSION="2.8.4" \
+./linux/install.sh --yes
+```
+
+```powershell
+$env:OHMYPOSH_VERSION = "26.18.0"
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes
+```
+
+### 4. Restaurer un fichier remplacé
+
+Les scripts d'installation **sauvegardent** systématiquement la version précédente avant d'écraser. Tu retrouves la sauvegarde à côté du fichier d'origine.
+
+```bash
+ls -lht ~/.zshrc.bak.mvnuel-* | head
+mv ~/.zshrc.bak.mvnuel-20260101-103045 ~/.zshrc
+```
+
+```bash
+ls -lht ~/Library/Preferences/com.apple.Terminal.plist.bak.mvnuel-* 2>/dev/null
+```
+
+```powershell
+$profile = $PROFILE.CurrentUserCurrentHost
+Get-ChildItem -Path (Split-Path $profile) -Filter '*.bak.mvnuel.*' | Sort-Object LastWriteTime -Descending
+Copy-Item "$profile.bak.mvnuel.20260101-103045" $profile -Force
+```
+
+> Pour Windows Terminal : la sauvegarde du `settings.json` est posée dans le même dossier `LocalState` que l'original, sous `settings.json.bak.mvnuel.<TS>`.
+
+### 5. Désinstallation puis réinstallation propre
+
+Le combo recommandé pour repartir vraiment de zéro côté Linux/macOS :
+
+```bash
+./linux/uninstall.sh --yes              # retire ce que le projet a installé
+./linux/purge_zsh.sh --yes              # vire les résidus zsh / Oh My Zsh
+./linux/purge_zsh.sh --yes --with-history  # idem + ~/.zsh_history (optionnel)
+./linux/install.sh --yes                # réinstalle proprement
+```
+
+Côté Windows, l'équivalent :
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\uninstall.ps1 -Yes
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\purge_profile.ps1 -Yes -WithHistory
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes
+```
+
+> Sur Linux, ajouter `--apt` à `uninstall.sh` enlève aussi `fonts-powerline` (paquet système). Les scripts laissent volontairement `python3-pip`, `pipx` et `git` en place : trop largement utilisés pour les retirer automatiquement.
+
+### 6. Mise à jour minimale (juste les configs)
+
+Si Lucky Terminal est déjà installé et que tu as juste mis à jour le dépôt (nouveau `.zshrc` ou nouveau thème), pas besoin de tout réinstaller — relance uniquement l'étape `profile` :
+
+```bash
+git pull
+./linux/install_profile.sh --yes        # ou ./macos/install_profile.sh --yes
+```
+
+```powershell
+git pull
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install_profile.ps1 -Yes
+```
+
+C'est l'étape la moins coûteuse (pas de téléchargement réseau hors clones de plug-ins) et c'est elle qui copie le thème et le `$PROFILE`.
+
+### 7. Forcer la mise à jour de PSReadLine (Windows)
+
+Si une session PowerShell garde verrouillée une vieille version de PSReadLine, l'install lève le warning « PSReadLine n'a peut-être pas été mis à jour ». Solution : ferme **toutes** les sessions, puis relance avec le flag dédié :
+
+```powershell
+powershell -NoProfile -ExecutionPolicy Bypass -File .\windows\install.ps1 -Yes -ForcePSReadLineUpdate
+```
+
+### 8. Importer Windows Terminal sans casser ta config
+
+Le step `install_profile.ps1` propose (`Confirm-Step`) d'écraser le `settings.json` de Windows Terminal. **Si tu as déjà une config riche**, réponds `n` à la question, puis ouvre `windows\configs\windows-terminal-settings.json` et copie-colle juste le profil PowerShell + le bloc `schemes` Mvnuel dans ton `settings.json` existant.
+
+---
+
 ## 🔒 Sécurité des sources & épinglage
 
 Par défaut, les scripts installent les dernières versions des dépendances distantes (Oh My Zsh, plug-ins zsh, `powerline-status`, Oh My Posh). En CI ou en environnement sensible, on peut figer ces versions et vérifier l’intégrité des scripts téléchargés **sans modifier le code** : toutes les sources passent par HTTPS obligatoire, et chaque script distant est téléchargé dans un fichier temporaire (plus de `curl | sh` aveugle).
