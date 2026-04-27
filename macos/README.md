@@ -1,6 +1,6 @@
 # Lucky Terminal — macOS
 
-![Aperçu du terminal](../macos.png)
+![Aperçu du terminal](./macos.png)
 
 Tu es sur **Mac** ? Tu es au bon endroit : ce dossier contient **tout** ce qu’il faut pour appliquer le thème customisé (invite Zsh, couleurs, `ls` agréable). Les scripts sous `linux/` sont pour Linux uniquement ici on utilise `macos/install.sh` et les fichiers de `macos/configs/`.
 

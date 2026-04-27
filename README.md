@@ -15,7 +15,7 @@ Inspiré des approches du type [pixegami/terminal-profile](https://github.com/pi
 ## 🖼️ Aperçu
 
 
-| **Linux** · Ubuntu + GNOME | **macOS** · Terminal.app / iTerm2 | **Windows** · PowerShell + Oh My Posh |
+| ![linux](./linux/linux.png) | ![macos](./macos/macos.png) | ![windows](./windows/powershell.png) |
 | -------------------------- | --------------------------------- | ------------------------------------- |
 | Linux                      | macOS                             | Windows                               |
 
