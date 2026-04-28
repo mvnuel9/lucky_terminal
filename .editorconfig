@@ -1,0 +1,27 @@
+# EditorConfig — conventions de formatage Lucky Terminal
+# Doc : https://editorconfig.org
+
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+[*.{sh,bash,zsh,zsh-theme}]
+indent_style = space
+indent_size = 2
+
+[*.ps1]
+# PowerShell : CRLF (conventionnel Windows, cf. .gitattributes) et 4 espaces.
+end_of_line = crlf
+indent_size = 4
+
+[*.{md,markdown}]
+trim_trailing_whitespace = false
+
+[Makefile]
+indent_style = tab

@@ -11,41 +11,30 @@
 #
 set -euo pipefail
 
-# Bash 3.2 (macOS) : pas de ${var,,} — utiliser tr pour rester compatible.
-_sh_tolower() {
-  printf '%s' "$1" | tr '[:upper:]' '[:lower:]'
-}
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=../scripts/_common.sh
+. "${SCRIPT_DIR}/../scripts/_common.sh"
 
-if [[ "$(uname -s)" != "Darwin" ]]; then
-  echo "Ce script est prévu pour macOS (Darwin)." >&2
-  exit 1
+if [[ "$(lucky_os)" != "macos" ]]; then
+  die "Ce script est prévu pour macOS (Darwin)." "$LUCKY_EXIT_UNSUPPORTED_OS"
 fi
 
-AUTO_YES=0
 WITH_HISTORY=0
-for arg in "$@"; do
+parse_common_args "$@"
+for arg in ${LUCKY_REMAINING_ARGS[@]+"${LUCKY_REMAINING_ARGS[@]}"}; do
   case "$arg" in
-    --yes|-y) AUTO_YES=1 ;;
     --with-history) WITH_HISTORY=1 ;;
-    --help|-h)
-      grep '^#' "$0" | head -16
+    --help | -h)
+      awk '/^#/{print; next} {exit}' "$0"
       exit 0
+      ;;
+    *)
+      log_warn "Option inconnue ignorée : $arg"
       ;;
   esac
 done
 
-confirm() {
-  local msg=$1
-  if [[ "$AUTO_YES" -eq 1 ]]; then
-    echo "OK (--yes): $msg"
-    return 0
-  fi
-  read -r -p "$msg [o/N] " reply
-  reply_lc="$(_sh_tolower "$reply")"
-  [[ "$reply_lc" == "o" || "$reply_lc" == "oui" || "$reply" == "y" || "$reply" == "Y" ]]
-}
-
-echo "=== Purge zsh / Oh My Zsh (résidus) — macOS ==="
+log_info "=== Purge zsh / Oh My Zsh (résidus) — macOS ==="
 echo ""
 
 targets=()
@@ -76,35 +65,35 @@ if [[ "$WITH_HISTORY" -eq 1 ]]; then
 fi
 
 if [[ ${#targets[@]} -eq 0 ]]; then
-  echo "Aucun fichier ou dossier cible trouvé (~/.oh-my-zsh, ~/.zshrc, .zcompdump*, etc.)."
-  echo "Rien à faire."
-  exit 0
+  log_info "Aucun fichier ou dossier cible trouvé (~/.oh-my-zsh, ~/.zshrc, .zcompdump*, etc.)."
+  log_info "Rien à faire."
+  exit "$LUCKY_EXIT_OK"
 fi
 
-echo "Seront supprimés définitivement :"
+log_info "Seront supprimés définitivement :"
 printf '  %s\n' "${targets[@]}"
 echo ""
 
 if [[ "$WITH_HISTORY" -ne 1 ]] && [[ -f "$HOME/.zsh_history" ]]; then
-  echo "(~/.zsh_history est conservé. Pour le supprimer aussi : $0 --yes --with-history)"
+  log_info "(~/.zsh_history est conservé. Pour le supprimer aussi : $0 --yes --with-history)"
   echo ""
 fi
 
 if ! confirm "Continuer la suppression ?"; then
-  echo "Annulé."
-  exit 1
+  log_warn "Annulé."
+  exit "$LUCKY_EXIT_CANCELLED"
 fi
 
 for p in "${targets[@]}"; do
   if [[ -d "$p" ]]; then
-    echo "Suppression dossier : $p"
-    rm -rf "$p"
+    log_info "Suppression dossier : $p"
+    lucky_run rm -rf "$p"
   elif [[ -f "$p" || -L "$p" ]]; then
-    echo "Suppression fichier : $p"
-    rm -f "$p"
+    log_info "Suppression fichier : $p"
+    lucky_run rm -f "$p"
   fi
 done
 
 echo ""
-echo "Terminé. Tu peux relancer ./macos/install.sh (depuis la racine du dépôt) pour réinstaller le profil."
-echo "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors, ~/.dircolors.terminal."
+log_ok "Terminé. Tu peux relancer ./macos/install.sh (depuis la racine du dépôt) pour réinstaller le profil."
+log_info "Fichiers non gérés ici (à vérifier à la main si besoin) : ~/.zshenv, ~/.zprofile, ~/.zlogin, ~/.dircolors, ~/.dircolors.terminal."
